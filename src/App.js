@@ -4,6 +4,9 @@ import React from 'react';
 
 const BOARD_WIDTH = 5;
 const BOARD_HEIGHT = 9;
+const MAX_PLAYERS = 4;
+const CACHE_SIZE = 4;
+const CELLS_SIZE = MAX_PLAYERS * CACHE_SIZE + BOARD_WIDTH * BOARD_HEIGHT;
 
 function XyIsValid(x, y) {
   // 2
@@ -29,8 +32,25 @@ function XyIsValid(x, y) {
     return true;
   }
 }
+
 function XyToPos(x, y) {
-  return y * BOARD_WIDTH + x;
+  return MAX_PLAYERS * CACHE_SIZE + y * BOARD_WIDTH + x;
+}
+
+function PosIsCache(pos) {
+  return pos < MAX_PLAYERS * CACHE_SIZE;
+}
+
+function CachePosToPlayer(pos) {
+  if (!PosIsCache(pos))
+    return null;
+  return Math.floor(pos / CACHE_SIZE);
+}
+
+function CachePosIndex(pos) {
+  if (!PosIsCache(pos))
+    return null
+  return pos % CACHE_SIZE;
 }
 
 class HexBoardSpacer extends React.Component {
@@ -170,10 +190,11 @@ class HexBoard extends React.Component {
   }
 
   onClickEmpty = (pos) => {
+    this.props.moves.moveToken(this.state.activeHex, pos);
     this.setState({
       activeHex: null
     });
-    alert('Clicked empty hex ' + pos + '!');
+    console.log('Clicked empty hex ' + pos + '!');
   }
 
   render() {
@@ -234,7 +255,7 @@ class HexBoard extends React.Component {
 
 const Hex = Game({
   setup: () => {
-    let cells = Array(BOARD_HEIGHT * BOARD_WIDTH).fill(null);
+    let cells = Array(CELLS_SIZE).fill(null);
     for (let y = 0; y < BOARD_HEIGHT; y++) {
       for (let x = 0; x < BOARD_WIDTH; x++) {
         if (XyIsValid(x, y) && (x * y % 4 > 2)) {
@@ -248,10 +269,10 @@ const Hex = Game({
   },
 
   moves: {
-    clickCell(G, ctx, id) {
-      // Ensure that we can't overwrite cells.
-      if (G.cells[id] === null) {
-        G.cells[id] = ctx.currentPlayer;
+    moveToken(G, ctx, from, to) {
+      if (G.cells[to] === null) {
+        G.cells[to] = G.cells[from];
+        G.cells[from] = null;
       }
     },
   },
