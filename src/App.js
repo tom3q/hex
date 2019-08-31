@@ -190,7 +190,8 @@ class HexBoard extends React.Component {
   }
 
   onClickEmpty = (pos) => {
-    this.props.moves.moveToken(this.state.activeHex, pos);
+    if (this.state.activeHex !== null)
+      this.props.moves.moveToken(this.state.activeHex, pos);
     this.setState({
       activeHex: null
     });
