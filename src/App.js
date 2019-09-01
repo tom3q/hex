@@ -69,11 +69,6 @@ class HexBoardSpacer extends React.Component {
 }
 
 class HexBoardContainer extends React.Component {
-  onClick = (e) => {
-    this.props.onClick(this.props.pos);
-    e.stopPropagation();
-  }
-
   render() {
     const cellStyle = {
       display: 'table-cell',
@@ -81,21 +76,20 @@ class HexBoardContainer extends React.Component {
       width: '92px',
       height: '52px',
     };
-    const hexContainerStyle = {
+    const overflowStyle = {
       overflow: 'visible',
       height: '1px',
       width: '1px',
     };
-    const emptyHexStyle = {
+    const containerStyle = {
       width: '118px',
       height: '100px',
-      clipPath: 'polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%)',
+      position: 'relative',
     };
     return (
       <div style={cellStyle}>
-        <div style={hexContainerStyle}>
-          <div style={emptyHexStyle}
-               onClick={(e) => this.onClick(e)}>
+        <div style={overflowStyle}>
+          <div style={containerStyle}>
             {this.props.children}
           </div>
         </div>
@@ -104,13 +98,36 @@ class HexBoardContainer extends React.Component {
   }
 }
 
+class HexBoardEmpty extends React.Component {
+  onClick = (e) => {
+    this.props.onClick(this.props.pos);
+    e.stopPropagation();
+  }
+
+  render() {
+    const emptyHexStyle = {
+      width: '100%',
+      height: '100%',
+      clipPath: 'polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%)',
+      zIndex: 30,
+      position: 'relative',
+    };
+    return (
+      <HexBoardContainer>
+        <div style={emptyHexStyle}
+             onClick={(e) => this.onClick(e)}>
+          {this.props.children}
+        </div>
+      </HexBoardContainer>
+    );
+  }
+}
 class HexBoardToken extends React.Component {
   constructor(props) {
     super(props);
     this.wheelPos = 0;
     this.state = {
       floating: false,
-      rotation: 0,
     };
   }
 
@@ -122,12 +139,11 @@ class HexBoardToken extends React.Component {
     this.wheelPos += e.deltaY;
     let steps = Math.floor(this.wheelPos / 128);
     this.wheelPos -= steps * 128;
-    this.setState(state => ({
-      rotation: (state.rotation + steps * 60) % 360,
-    }));
+    this.props.onRotate(this.props.pos, steps * 60);
   }
 
   onClick = (e) => {
+    console.log('Clicked hex ' + this.props.pos);
     this.props.onClick(this.props.pos);
     e.stopPropagation();
   }
@@ -140,7 +156,10 @@ class HexBoardToken extends React.Component {
       backgroundPosition: 'center center',
       width: '100%',
       height: '100%',
-      transform: 'rotate(' + this.state.rotation + 'deg)',
+      transform: 'rotate(' + this.props.rotation + 'deg)',
+      clipPath: 'polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%)',
+      position: 'relative',
+      zIndex: 20,
     };
     if (this.state.floating) {
       fullHexStyle.position = 'fixed';
@@ -152,18 +171,24 @@ class HexBoardToken extends React.Component {
       backgroundPosition: 'center center',
       width: '100%',
       height: '100%',
+      position: 'absolute',
+      left: '0px',
+      top: '0px',
       visibility: 'hidden',
+      zIndex: 15,
     };
     if (this.props.active) {
       overlayStyle.visibility = 'visible';
+      fullHexStyle.zIndex = 10;
     }
     return (
-      <HexBoardContainer pos={this.props.pos} hasToken="true">
+      <HexBoardContainer>
         <div style={fullHexStyle}
              onClick={(e) => this.onClick(e)}
-             onWheel={(e) => this.onWheel(e)}>
-          <div style={overlayStyle}></div>
-        </div>
+             onWheel={(e) => this.onWheel(e)}></div>
+        <div style={overlayStyle}
+             onClick={(e) => this.onClick(e)}
+             onWheel={(e) => this.onWheel(e)}></div>
       </HexBoardContainer>
     );
   }
@@ -182,6 +207,10 @@ class HexBoard extends React.Component {
       activeHex: null
     });
   }
+
+  onRotateToken = (pos, rotation) => {
+    this.props.moves.rotateToken(pos, rotation);
+  };
 
   onClickToken = (pos) => {
     this.setState(state => ({
@@ -209,6 +238,7 @@ class HexBoard extends React.Component {
       backgroundImage: `url(${boardBackground})`,
       width: '1024px',
       height: '683px',
+      zIndex: 0,
     };
 
     const tableStyle = {
@@ -231,11 +261,13 @@ class HexBoard extends React.Component {
           if (hex)
             cells.push(<HexBoardToken key={pos} pos={pos}
                                       token={hex.token}
+                                      rotation={hex.rotation}
                                       active={this.state.activeHex === pos}
-                                      onClick={this.onClickToken}/>);
+                                      onClick={this.onClickToken}
+                                      onRotate={this.onRotateToken}/>);
           else
-            cells.push(<HexBoardContainer key={pos} pos={pos}
-                                          onClick={this.onClickEmpty}/>);
+            cells.push(<HexBoardEmpty key={pos} pos={pos}
+                                      onClick={this.onClickEmpty}/>);
         } else {
           cells.push(<HexBoardSpacer key={pos}/>);
         }
@@ -262,6 +294,7 @@ const Hex = Game({
         if (XyIsValid(x, y) && (x * y % 4 > 2)) {
           cells[XyToPos(x, y)] = {
             token: 'borgo_net_fighter',
+            rotation: 0,
           }
         }
       }
@@ -274,6 +307,12 @@ const Hex = Game({
       if (G.cells[to] === null) {
         G.cells[to] = G.cells[from];
         G.cells[from] = null;
+      }
+    },
+
+    rotateToken(G, ctx, pos, rotation) {
+      if (G.cells[pos] !== null) {
+        G.cells[pos].rotation = (G.cells[pos].rotation + rotation) % 360;
       }
     },
   },
