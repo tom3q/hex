@@ -2,17 +2,39 @@ import { Game } from 'boardgame.io/core';
 import { INVALID_MOVE } from 'boardgame.io/core';
 import * as HexUtils from 'HexUtils.js';
 
+class Deck {
+  constructor(army) {
+    this.army = army;
+
+    let armyInfo = require(`resources/armies/${army}.json`);
+    console.log(armyInfo);
+
+    this.hqTokens = [];
+    this.tokens = [];
+
+    for (let token of armyInfo.tokens) {
+      if (token.hq)
+        this.hqTokens.push(token);
+      else
+        this.tokens.push(token);
+    }
+  }
+}
+
 export const HexGame = Game({
-  setup: () => {
+  setup: (ctx) => {
     let cells = Array(HexUtils.CELLS_SIZE).fill(null);
-    for (let y = 0; y < HexUtils.BOARD_HEIGHT; y++) {
-      for (let x = 0; x < HexUtils.BOARD_WIDTH; x++) {
-        if (HexUtils.XyIsValid(x, y) && (x * y % 4 > 2)) {
-          cells[HexUtils.XyToPos(x, y)] = {
-            token: 'borgo_net_fighter',
-            rotation: 0,
-          }
+    for (let player = 0; player < ctx.numPlayers; ++player) {
+      let deck = new Deck("borgo");
+      let cachePos = player * HexUtils.CACHE_SIZE;
+      let i = 0;
+      for (let token of deck.hqTokens) {
+        cells[cachePos + i] = {
+          token: deck.army + '_' + token.id,
+          rotation: 0,
         }
+        if (++i >= 3)
+          break;
       }
     }
     return { cells: cells };
