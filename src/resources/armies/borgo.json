@@ -28,6 +28,11 @@
         {
           "type": "riffle"
         }
+      ],
+      "modifiers": [
+       {
+	  "type": "mobility"
+       }
       ]
     }, {
       "id": "brawler",
@@ -64,6 +69,136 @@
           "value": -128
         }
       ]
+    }, {
+      "id": "mutant",
+      "initiative": 2,
+      "health": 2,
+      "count": 6,
+      "attacks": [
+        {
+          "type": "melee",
+          "damage": 1
+        }, {
+          "type": "melee",
+          "angle": 5
+        }, {
+          "type": "melee",
+          "angle": 1
+        }
+      ]
+    }, {
+      "id": "butcher",
+      "initiative": 2,
+      "health": 2,
+      "count": 4,
+      "attacks": [
+        {
+          "type": "melee",
+          "damage": 2
+        }, {
+          "type": "melee",
+          "angle": 5
+        }
+      ]
+    }, {    
+      "id": "super_mutant",
+      "initiative": 2,
+      "health": 1,
+      "count": 1,
+      "attacks": [
+        {
+          "type": "melee",
+          "damage": 2
+        }
+      ]
+    }, {
+      "id": "super_officer",
+      "count": 1,
+      "initiative": 0,
+      "health": 1,
+      "modifiers": [
+	{
+	  "type": "stregthm",
+	  "value": 1
+	}, {
+	  "type": "stregthm",
+	  "angle": 1,
+	  "value": 1
+	}, {
+	  "type": "strengthm",
+	  "angle": 5,
+	  "value": 1
+	}, {
+	  "type": "toughness",
+	  "value": 1,
+	  "self": true
+	}, {
+	  "type": "toughness",
+	  "angle": 1,
+	  "value": 1
+	}, {
+	  "type": "toughness",
+	  "angle": 5,
+	  "value": 1
+	}
+     ]
+    }, {
+      "id": "medic",
+      "count": 1,
+      "initiative": 0,
+      "health": 1, 	
+      "modifiers": [
+	{
+	  "type": "medic",
+	  "value": 1,
+	  "self": true
+	}, {
+	  "type": "medic",
+	  "angle": 1,
+	  "value": 1
+	}, {
+	  "type": "medic",
+	  "angle": 5,
+	  "value": 1
+	}
+     ]
+    }, {
+      "id": "officer",
+      "count": 2,
+      "initiative": 0,
+      "health": 1,
+      "modifiers": [
+	{
+	  "type": "strenghtm",
+	  "value": 1
+	}, {
+	  "type": "strenghtm",
+	  "angle": 1,
+	  "value": 1
+	}, {
+	  "type": "strenghtm",
+	  "angle": 5,
+	  "value": 1
+	}
+     ]
+    }, {
+      "id": "scout",
+      "count": 2,
+      "initiative": 0,
+      "modifiers": [
+	{
+	  "type": "inititive",
+	  "value": 1
+	}, {
+	  "type": "inititive",
+	  "angle": 1,
+	  "value": 1
+	}, {
+	  "type": "inititive",
+	  "angle": 5,
+	  "value": 1
+	}
+     ]
     }
   ]
 }
