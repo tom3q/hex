@@ -136,7 +136,7 @@ class HexBoardToken extends React.Component {
     this.wheelPos += e.deltaY;
     let steps = Math.floor(this.wheelPos / 128);
     this.wheelPos -= steps * 128;
-    this.props.onRotate(this.props.pos, steps * 60);
+    this.props.onRotate(this.props.pos, steps);
   }
 
   onClick = (e) => {
@@ -153,7 +153,7 @@ class HexBoardToken extends React.Component {
       backgroundPosition: 'center center',
       width: '100%',
       height: '100%',
-      transform: 'rotate(' + this.props.rotation + 'deg)',
+      transform: 'rotate(' + this.props.rotation * 60 + 'deg)',
       clipPath: 'polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%)',
       position: 'relative',
       zIndex: 20,

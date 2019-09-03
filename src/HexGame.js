@@ -53,7 +53,7 @@ export const HexGame = Game({
       if (G.cells[pos] === null)
         return INVALID_MOVE;
 
-      G.cells[pos].rotation = (G.cells[pos].rotation + rotation) % 360;
+      G.cells[pos].rotation = (G.cells[pos].rotation + rotation) % 6;
     },
   },
 
