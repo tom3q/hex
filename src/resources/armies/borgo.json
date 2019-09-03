@@ -21,7 +21,7 @@
         }
       ]
     }, {
-      "id": "assasin",
+      "id": "assassin",
       "count": 2,
       "initiative": 3,
       "attacks": [
@@ -49,7 +49,7 @@
         0, 1, 5
       ]
     }, {
-      "id": "net_figher",
+      "id": "net_fighter",
       "count": 2,
       "initiative": 1,
       "attacks": [
