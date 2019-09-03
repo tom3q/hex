@@ -12,12 +12,17 @@ class Deck {
     this.hqTokens = [];
     this.tokens = [];
 
-    for (let token of armyInfo.tokens) {
-      if (token.hq)
-        this.hqTokens.push(token);
-      else
-        this.tokens.push(token);
+    let token;
+    for (token of armyInfo.tokens) {
+      for (let i = 0; i < (token.count || 1); ++i) {
+        if (token.hq)
+          this.hqTokens.push(token);
+        else
+          this.tokens.push(token);
+      }
     }
+
+    console.log(this.tokens);
   }
 }
 
