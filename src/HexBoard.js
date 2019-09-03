@@ -267,15 +267,17 @@ export class HexBoard extends React.Component {
 
     const boardStyle = {
       backgroundImage: `url(${boardBackground})`,
+      backgroundPosition: '0px 50px',
+      backgroundRepeat: 'no-repeat',
       width: '1024px',
-      height: '683px',
       zIndex: 0,
     };
 
     const horizontalCacheStyle = {
       width: '100%',
-      height: '80px',
+      height: '130px',
       textAlign: 'center',
+      marginTop: '30px',
     };
 
     const verticalCacheStyle = {
