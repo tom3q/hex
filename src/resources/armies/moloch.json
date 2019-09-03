@@ -1,0 +1,225 @@
+{
+  "id": "moloch",
+  "name": "Moloch",
+  "tokens": [
+    {
+      "id": "hq",
+      "hq": true,
+      "initiative": 0,
+      "attacks": [
+        {
+          "type": "riffle",
+          "angle": -1
+        }
+      ],
+      "modifiers": [
+        {
+          "type": "stregthr",
+          "angle": -1,
+          "value": 1,
+          "self": true
+        }
+      ]
+    }, {
+      "id": "cyborg",
+      "count": 2,
+      "initiative": 3,
+      "attacks": [
+        {
+          "type": "riffle"
+        }
+      ]
+    }, {
+      "id": "gauss_cannon",
+      "initiative": 1,
+      "health": 2,
+      "attacks": [
+        {
+          "type": "cannon",
+          "damage": 1
+        }
+      ],
+      "modifiers": [
+	{
+	  "type": "nostrength",
+	  "self": true
+	}
+      ]
+    }, {
+      "id": "juggernaut",
+      "count": 1,
+      "initiative": 1,
+      "attacks": [
+        {
+          "type": "melee",
+          "damage": 2
+        }, {
+	  "type": "riffle",
+	  "angle": 1,
+	  "damage": 1
+	}
+      ],
+      "modifiers": [
+      	{
+          "type": "toughness",
+          "value": 1,
+	  "self": true
+        }
+      ],
+      "shields": [
+	0, 2, 4 
+     ]
+    }, {
+      "id": "the_clown",
+      "initiative": 2,
+      "health": 1,
+      "count": 1,
+      "attacks": [
+        {
+          "type": "melee",
+          "damage": 1
+        }, {
+          "type": "melee",
+          "angle": 5
+        }
+      ],
+      "modifiers": [
+      	{
+          "type": "toughness",
+          "value": 1,
+	  "self": true
+        }, {
+	  "type": "airstrike",
+	  "value": 1,
+	  "self": true
+	}
+      ]
+    }, {
+      "id": "hunter_killer",
+      "initiative": 3,
+      "health": 1,
+      "count": 2,
+      "attacks": [
+        {
+          "type": "melee",
+          "damage": 1
+        }, {
+	  "type": "melee",
+	  "angle": 1
+	}, {
+	  "type": "melee",
+	  "angle": 3
+	}, {
+          "type": "melee",
+          "angle": 5
+        }
+      ]
+    }, {    
+      "id": "super_mutant",
+      "initiative": 2,
+      "health": 1,
+      "count": 1,
+      "attacks": [
+        {
+          "type": "melee",
+          "damage": 2
+        }
+      ]
+    }, {
+      "id": "super_officer",
+      "count": 1,
+      "initiative": 0,
+      "health": 2,
+      "attacks": [
+      	{
+	  "type": "melee",
+	  "damage": 0
+	}, {
+	  "type": "melee",
+  	  "angle": 5
+	}, {
+	  "type": "melee",
+  	  "angle": 1
+	}	  
+      ],
+      "modifiers": [
+	{
+	  "type": "stregth",
+	  "value": 1
+	}, {
+	  "type": "toughness",
+	  "value": 1
+	}
+     ]
+    }, {
+      "id": "medic",
+      "count": 1,
+      "initiative": 0,
+      "health": 1,
+      "attacks": [
+      	{
+	  "type": "melee",
+	  "damage": 0
+	},{
+	  "type": "melee",
+  	  "angle": 5
+	}, {
+	  "type": "melee",
+  	  "angle": 1
+	}	  
+      ],
+      "modifiers": [
+	{
+	  "type": "medic",
+	  "value": 1
+	}
+     ]
+    }, {
+      "id": "officer",
+      "count": 2,
+      "initiative": 0,
+      "health": 1,
+      "attacks": [
+      	{
+	  "type": "melee",
+	  "damage": 0
+	},{
+	  "type": "melee",
+  	  "angle": 5
+	}, {
+	  "type": "melee",
+  	  "angle": 1
+	}	  
+      ],
+      "modifiers": [
+	{
+	  "type": "stregth",
+	  "value": 1
+	}
+     ]
+    }, {
+      "id": "scout",
+      "count": 2,
+      "initiative": 0,
+      "health": 1,
+      "attacks": [
+      	{
+	  "type": "melee",
+	  "damage": 0
+	},{
+	  "type": "melee",
+  	  "angle": 5
+	}, {
+	  "type": "melee",
+  	  "angle": 1
+	}	  
+      ],
+      "modifiers": [
+	{
+	  "type": "initiative",
+	  "value": 1
+	}
+     ]
+    }
+  ]
+}
