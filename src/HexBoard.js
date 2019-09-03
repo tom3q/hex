@@ -350,7 +350,7 @@ export class HexBoard extends React.Component {
         </div>
         <div style={middleContainerStyle}>
           <div style={verticalCacheStyle}>
-            <TokenCache player={(this.props.playerID + 3) % 4}
+            <TokenCache player={(this.props.playerID + 1) % 4}
                         cells={this.props.G.cells}
                         activeHex={this.state.activeHex}
                         onClick={this.onClick}
@@ -362,7 +362,7 @@ export class HexBoard extends React.Component {
             </div>
           </div>
           <div style={verticalCacheStyle}>
-            <TokenCache player={this.props.playerID}
+            <TokenCache player={(this.props.playerID + 3) % 4}
                         cells={this.props.G.cells}
                         activeHex={this.state.activeHex}
                         onClick={this.onClick}
@@ -370,7 +370,7 @@ export class HexBoard extends React.Component {
           </div>
         </div>
         <div style={horizontalCacheStyle}>
-          <TokenCache player={(this.props.playerID + 1) % 4}
+          <TokenCache player={this.props.playerID}
                       cells={this.props.G.cells}
                       activeHex={this.state.activeHex}
                       onClick={this.onClick}/>
