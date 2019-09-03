@@ -1,0 +1,69 @@
+{
+  "id": "borgo",
+  "name": "Borgo",
+  "tokens": [
+    {
+      "id": "hq",
+      "hq": true,
+      "initiative": 0,
+      "attacks": [
+        {
+          "type": "riffle",
+          "angle": -1
+        }
+      ],
+      "modifiers": [
+        {
+          "type": "initiative",
+          "angle": -1,
+          "value": 1,
+          "self": true
+        }
+      ]
+    }, {
+      "id": "assasin",
+      "count": 2,
+      "initiative": 3,
+      "attacks": [
+        {
+          "type": "riffle"
+        }
+      ]
+    }, {
+      "id": "brawler",
+      "initiative": 2,
+      "health": 2,
+      "attacks": [
+        {
+          "type": "melee",
+          "damage": 2
+        }, {
+          "type": "melee",
+          "angle": 5
+        }, {
+          "type": "melee",
+          "angle": 1
+        }
+      ],
+      "shields": [
+        0, 1, 5
+      ]
+    }, {
+      "id": "net_figher",
+      "count": 2,
+      "initiative": 1,
+      "attacks": [
+        {
+          "type": "melee",
+          "damage": 3
+        }
+      ],
+      "modifiers": [
+        {
+          "type": "initiative",
+          "value": -128
+        }
+      ]
+    }
+  ]
+}
