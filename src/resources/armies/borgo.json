@@ -29,7 +29,7 @@
           "type": "riffle"
         }
       ],
-      "modifiers": [
+      "abilities": [
        {
 	  "type": "mobility"
        }
@@ -65,8 +65,7 @@
       ],
       "modifiers": [
         {
-          "type": "initiative",
-          "value": -128
+          "type": "net"
         }
       ]
     }, {
@@ -76,8 +75,7 @@
       "count": 6,
       "attacks": [
         {
-          "type": "melee",
-          "damage": 1
+          "type": "melee"
         }, {
           "type": "melee",
           "angle": 5
@@ -103,7 +101,6 @@
     }, {    
       "id": "super_mutant",
       "initiative": 2,
-      "health": 1,
       "count": 1,
       "attacks": [
         {
@@ -114,30 +111,18 @@
     }, {
       "id": "super_officer",
       "count": 1,
-      "initiative": 0,
-      "health": 1,
+      "health": 2,
+      "module": true,
       "modifiers": [
 	{
-	  "type": "stregthm",
+	  "type": "strengthm",
 	  "value": 1
 	}, {
-	  "type": "stregthm",
+	  "type": "strengthm",
 	  "angle": 1,
 	  "value": 1
 	}, {
 	  "type": "strengthm",
-	  "angle": 5,
-	  "value": 1
-	}, {
-	  "type": "toughness",
-	  "value": 1,
-	  "self": true
-	}, {
-	  "type": "toughness",
-	  "angle": 1,
-	  "value": 1
-	}, {
-	  "type": "toughness",
 	  "angle": 5,
 	  "value": 1
 	}
@@ -145,8 +130,7 @@
     }, {
       "id": "medic",
       "count": 1,
-      "initiative": 0,
-      "health": 1, 	
+      "module": true,
       "modifiers": [
 	{
 	  "type": "medic",
@@ -165,8 +149,7 @@
     }, {
       "id": "officer",
       "count": 2,
-      "initiative": 0,
-      "health": 1,
+      "module": true,
       "modifiers": [
 	{
 	  "type": "strenghtm",
@@ -184,7 +167,7 @@
     }, {
       "id": "scout",
       "count": 2,
-      "initiative": 0,
+      "module": true,
       "modifiers": [
 	{
 	  "type": "inititive",
@@ -199,6 +182,18 @@
 	  "value": 1
 	}
      ]
+    }, {
+      "id": "battle",
+      "count": 6,
+      "instant": true
+    }, {
+      "id": "move",
+      "count": 4,
+      "instant": true
+    }, {
+      "id": "grenade",
+      "count": 1,
+      "instant": true
     }
   ]
 }
