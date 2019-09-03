@@ -3,7 +3,8 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 import * as HexUtils from 'HexUtils.js';
 
 class Deck {
-  constructor(army) {
+  constructor(ctx, army) {
+    this.ctx = ctx;
     this.army = army;
 
     let armyInfo = require(`resources/armies/${army}.json`);
@@ -24,15 +25,30 @@ class Deck {
 
     console.log(this.tokens);
   }
+
+  draw() {
+    let idx = 0;
+
+    do {
+      idx = Math.floor(this.ctx.random.Number() * this.tokens.length);
+    } while (idx === this.tokens.length);
+
+    let token = this.tokens[idx];
+    this.tokens[idx] = this.tokens[this.tokens.length - 1];
+    this.tokens.pop();
+
+    return token;
+  }
 }
 
 export const HexGame = Game({
   setup: (ctx) => {
     let cells = Array(HexUtils.CELLS_SIZE).fill(null);
     for (let player = 0; player < ctx.numPlayers; ++player) {
-      let deck = new Deck("borgo");
+      let deck = new Deck(ctx, "borgo");
       let cachePos = player * HexUtils.CACHE_SIZE;
       let i = 0;
+if (false) {
       for (let token of deck.hqTokens) {
         cells[cachePos + i] = {
           token: deck.army + '_' + token.id,
@@ -41,6 +57,15 @@ export const HexGame = Game({
         if (++i >= 3)
           break;
       }
+} else {
+      for (i = 0; i < 3; ++i) {
+        let token = deck.draw();
+        cells[cachePos + i] = {
+          token: deck.army + '_' + token.id,
+          rotation: 0,
+        }
+      }
+}
     }
     return { cells: cells };
   },
