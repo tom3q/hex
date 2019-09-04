@@ -12,6 +12,7 @@ const HexClient = Client({
 const App = () => (
   <div>
     <HexClient playerID="0" />
+    <HexClient playerID="1" />
   </div>
 );
 
