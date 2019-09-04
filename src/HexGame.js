@@ -73,6 +73,7 @@ export const HexGame = Game({
 
   flow: {
     startingPhase: "hqSetup",
+    endPhase: false,
 
     phases: {
       hqSetup: {
