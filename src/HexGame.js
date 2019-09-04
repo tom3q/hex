@@ -41,30 +41,17 @@ class Deck {
 export const HexGame = Game({
   setup: (ctx) => {
     let cells = Array(HexUtils.CELLS_SIZE).fill(null);
+    let players = Array(ctx.numPlayers);
+
     for (let player = 0; player < ctx.numPlayers; ++player) {
-      let deck = new Deck(ctx, "borgo");
-      let cachePos = player * HexUtils.CACHE_SIZE;
-      let i = 0;
-if (false) {
-      for (let token of deck.hqTokens) {
-        cells[cachePos + i] = {
-          token: deck.army + '_' + token.id,
-          rotation: 0,
-        }
-        if (++i >= 3)
-          break;
-      }
-} else {
-      for (i = 0; i < 3; ++i) {
-        let token = deck.draw();
-        cells[cachePos + i] = {
-          token: deck.army + '_' + token.id,
-          rotation: 0,
-        }
-      }
-}
+      players[player] = {
+        deck: new Deck(ctx, "borgo"),
+      };
     }
-    return { cells: cells };
+    return {
+      cells: cells,
+      players: players
+    };
   },
 
   moves: {
@@ -85,7 +72,58 @@ if (false) {
   },
 
   flow: {
-    endGameIf: (G, ctx) => {
+    startingPhase: "hqSetup",
+
+    phases: {
+      hqSetup: {
+        next: "normal",
+
+        onTurnBegin: (G, ctx) => {
+          const player = ctx.currentPlayer;
+          let deck = G.players[player].deck;
+          let cachePos = player * HexUtils.CACHE_SIZE;
+
+          let token;
+          for (token of deck.hqTokens) {
+            G.cells[cachePos++] = {
+              token: deck.army + '_' + token.id,
+              rotation: 0,
+            }
+          }
+        },
+
+        onTurnEnd: (G, ctx) => {
+          if (ctx.currentPlayer === ctx.numPlayers - 1)
+            ctx.events.endPhase();
+        },
+      },
+
+      normal: {
+        next: "battle",
+
+        onTurnBegin: (G, ctx) => {
+          const player = ctx.currentPlayer;
+          const cachePos = player * HexUtils.CACHE_SIZE;
+          let deck = G.players[player].deck;
+
+          for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
+            let cell = G.cells[cachePos + i];
+
+            if (cell)
+              continue;
+
+            let token = deck.draw();
+            G.cells[cachePos + i] = {
+              token: deck.army + '_' + token.id,
+              rotation: 0,
+            }
+          }
+        },
+      },
+
+      battle: {
+        next: "normal",
+      },
     },
   },
 });
