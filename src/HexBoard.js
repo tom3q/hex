@@ -194,7 +194,7 @@ class HexBoardToken extends React.Component {
 class TokenCache extends React.Component {
   render() {
     let items = [];
-    for (let i = 0; i < 3; ++i) {
+    for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
       let pos = this.props.player * HexUtils.CACHE_SIZE + i;
       let hex = this.props.cells[pos];
       if (hex)

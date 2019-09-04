@@ -1,7 +1,7 @@
 export const BOARD_WIDTH = 5;
 export const BOARD_HEIGHT = 9;
 export const MAX_PLAYERS = 4;
-export const CACHE_SIZE = 4;
+export const CACHE_SIZE = 3;
 export const CELLS_SIZE = MAX_PLAYERS * CACHE_SIZE
                           + BOARD_WIDTH * BOARD_HEIGHT;
 
