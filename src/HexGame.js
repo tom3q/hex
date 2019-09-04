@@ -6,24 +6,21 @@ class Deck {
   constructor(ctx, army) {
     this.ctx = ctx;
     this.army = army;
-
-    let armyInfo = require(`resources/armies/${army}.json`);
-    console.log(armyInfo);
-
     this.hqTokens = [];
     this.tokens = [];
 
+    const armyInfo = require(`resources/armies/${army}.json`);
     let token;
     for (token of armyInfo.tokens) {
       for (let i = 0; i < (token.count || 1); ++i) {
-        if (token.hq)
-          this.hqTokens.push(token);
-        else
+        if (token.hq) {
+          if (this.hqTokens.length < HexUtils.CACHE_SIZE)
+            this.hqTokens.push(token);
+        } else {
           this.tokens.push(token);
+        }
       }
     }
-
-    console.log(this.tokens);
   }
 
   draw() {
