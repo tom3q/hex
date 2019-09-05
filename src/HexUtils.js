@@ -19,7 +19,7 @@ export function XyIsValid(x, y) {
     if (!(x % 2))
       return false;
     return true;
-  } else if (y === 0 || y === this.BOARD_HEIGHT - 1) {
+  } else if (y === 0 || y === BOARD_HEIGHT - 1) {
     if (x !== 2)
       return false;
     return true;
@@ -31,5 +31,5 @@ export function XyIsValid(x, y) {
 }
 
 export function XyToPos(x, y) {
-  return this.MAX_PLAYERS * this.CACHE_SIZE + y * this.BOARD_WIDTH + x;
+  return MAX_PLAYERS * CACHE_SIZE + y * BOARD_WIDTH + x;
 }
