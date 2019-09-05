@@ -48,7 +48,8 @@ class HexBoardContainer extends React.Component {
 
 class HexBoardEmpty extends React.Component {
   onClick = (e) => {
-    this.props.onClick(e, this.props.pos);
+    if (this.props.onClick)
+      this.props.onClick(e, this.props.pos);
     e.stopPropagation();
   }
 
@@ -141,7 +142,8 @@ class HexBoardToken extends React.Component {
 
   onClick = (e) => {
     console.log('Clicked hex ' + this.props.pos);
-    this.props.onClick(e, this.props.pos);
+    if (this.props.onClick)
+      this.props.onClick(e, this.props.pos);
     e.stopPropagation();
  }
 
@@ -341,22 +343,28 @@ export class HexBoard extends React.Component {
       tbody.push(<div style={rowStyle} key={y}>{cells}</div>);
     }
 
+    let caches = [];
+    for (let i = 0; i < HexUtils.MAX_PLAYERS; ++i) {
+      const player = (parseInt(this.props.playerID) + i)
+                     % HexUtils.MAX_PLAYERS;
+      caches.push(
+        <TokenCache vertical={i % 2}
+                    player={player}
+                    cells={this.props.G.cells}
+                    activeHex={this.state.activeHex}
+                    onClick={!i ? this.onClick : null}/>
+      );
+    }
+
     return (
       <div style={boardStyle}
            onClick={(e) => this.onClick(e)}>
         <div style={horizontalCacheStyle}>
-          <TokenCache player={(this.props.playerID + 2) % 4}
-                      cells={this.props.G.cells}
-                      activeHex={this.state.activeHex}
-                      onClick={this.onClick}/>
+          {caches[2]}
         </div>
         <div style={middleContainerStyle}>
           <div style={verticalCacheStyle}>
-            <TokenCache player={(this.props.playerID + 1) % 4}
-                        cells={this.props.G.cells}
-                        activeHex={this.state.activeHex}
-                        onClick={this.onClick}
-                        vertical='true'/>
+            {caches[1]}
           </div>
           <div style={tableContainerStyle}>
             <div style={tableStyle} id="board">
@@ -364,18 +372,11 @@ export class HexBoard extends React.Component {
             </div>
           </div>
           <div style={verticalCacheStyle}>
-            <TokenCache player={(this.props.playerID + 3) % 4}
-                        cells={this.props.G.cells}
-                        activeHex={this.state.activeHex}
-                        onClick={this.onClick}
-                        vertical='true'/>
+            {caches[3]}
           </div>
         </div>
         <div style={horizontalCacheStyle}>
-          <TokenCache player={this.props.playerID}
-                      cells={this.props.G.cells}
-                      activeHex={this.state.activeHex}
-                      onClick={this.onClick}/>
+            {caches[0]}
         </div>
       </div>
     );
