@@ -23,8 +23,22 @@ class Deck {
     }
   }
 
+  allHqsDrawn() {
+    return !this.hqTokens.length;
+  }
+
+  drawHq() {
+    if (!this.hqTokens.length)
+      return null;
+
+    return this.hqTokens.pop();
+  }
+
   draw() {
     let idx = 0;
+
+    if (!this.tokens.length)
+      return null;
 
     do {
       idx = Math.floor(this.ctx.random.Number() * this.tokens.length);
@@ -82,20 +96,21 @@ export const HexGame = Game({
         onTurnBegin: (G, ctx) => {
           const player = ctx.currentPlayer;
           let deck = G.players[player].deck;
-          let cachePos = player * HexUtils.CACHE_SIZE;
 
+          if (deck.allHqsDrawn()) {
+            ctx.events.endPhase();
+            ctx.events.endTurn(player);
+            return;
+          }
+
+          let cachePos = player * HexUtils.CACHE_SIZE;
           let token;
-          for (token of deck.hqTokens) {
+          while (token = deck.drawHq()) {
             G.cells[cachePos++] = {
               token: deck.army + '_' + token.id,
               rotation: 0,
             }
           }
-        },
-
-        onTurnEnd: (G, ctx) => {
-          if (ctx.currentPlayer === ctx.numPlayers - 1)
-            ctx.events.endPhase();
         },
       },
 
