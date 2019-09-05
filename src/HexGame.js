@@ -13,6 +13,7 @@ class Deck {
     let token;
     for (token of armyInfo.tokens) {
       for (let i = 0; i < (token.count || 1); ++i) {
+        token.player = ctx.currentPlayer;
         if (token.hq) {
           if (this.hqTokens.length < HexUtils.CACHE_SIZE)
             this.hqTokens.push(token);
@@ -58,9 +59,7 @@ export const HexGame = Game({
     let players = Array(ctx.numPlayers);
 
     for (let player = 0; player < ctx.numPlayers; ++player) {
-      players[player] = {
-        deck: new Deck(ctx, "borgo"),
-      };
+      players[player] = {};
     }
     return {
       cells: cells,
@@ -95,8 +94,12 @@ export const HexGame = Game({
 
         onTurnBegin: (G, ctx) => {
           const player = ctx.currentPlayer;
-          let deck = G.players[player].deck;
 
+          if (!G.players[player].deck)
+            G.players[player].deck = new Deck(
+              ctx, parseInt(player) ? "borgo" : "moloch");
+
+          let deck = G.players[player].deck;
           if (deck.allHqsDrawn()) {
             ctx.events.endPhase();
             ctx.events.endTurn(player);
@@ -105,9 +108,10 @@ export const HexGame = Game({
 
           let cachePos = player * HexUtils.CACHE_SIZE;
           let token;
-          while (token = deck.drawHq()) {
+          while ((token = deck.drawHq())) {
             G.cells[cachePos++] = {
               token: deck.army + '_' + token.id,
+              player: player,
               rotation: 0,
             }
           }
@@ -131,6 +135,7 @@ export const HexGame = Game({
             let token = deck.draw();
             G.cells[cachePos + i] = {
               token: deck.army + '_' + token.id,
+              player: player,
               rotation: 0,
             }
           }
