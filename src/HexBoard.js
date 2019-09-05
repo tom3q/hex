@@ -145,7 +145,7 @@ class HexBoardToken extends React.Component {
     if (this.props.onClick)
       this.props.onClick(e, this.props.pos);
     e.stopPropagation();
- }
+  }
 
   render() {
     const fullHex=require('resources/' + this.props.token + '.png');
@@ -233,6 +233,9 @@ export class HexBoard extends React.Component {
   }
 
   onClick = (e, pos) => {
+    if (this.props.ctx.currentPlayer !== this.props.playerID)
+      return;
+
     if (pos === null) {
       this.setState({
         activeHex: null
@@ -243,7 +246,9 @@ export class HexBoard extends React.Component {
     let hex = this.props.G.cells[pos];
     if (hex) {
       this.setState(state => ({
-        activeHex: (pos === state.activeHex) ? null : pos,
+        activeHex: (pos === state.activeHex
+                    || hex.player !== this.props.playerID) ?
+                    null : pos,
       }));
       return;
     }
