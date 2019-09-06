@@ -1,11 +1,36 @@
 import React from 'react';
 import * as HexUtils from 'HexUtils.js';
+import PropTypes from 'prop-types';
 
 /*
  * Components representing single hex.
  */
 
+/**
+ * Renders a hex field with a token.
+ */
 class TokenHex extends React.Component {
+  static propTypes = {
+    /** Whether the hex is currently selected. */
+    active: PropTypes.bool,
+    /**
+     * A function to call when the hex is clicked.
+     * @param {!SyntheticEvent} Mouse click event.
+     * @param {number} Position of the hex.
+     */
+    onClick: PropTypes.func.isRequired,
+    /**
+     * A function to call when the scroll wheel is scrolled over the hex.
+     * @param {!SyntheticEvent} Mouse wheel event.
+     * @param {number} Position of the hex.
+     */
+    onWheel: PropTypes.func.isRequired,
+    /** Hex rotation in the unit of 60 degrees. */
+    rotation: PropTypes.number,
+    /** Name of the token to display. */
+    token: PropTypes.string.isRequired,
+  }
+
   render() {
     const hexImage=require(`resources/${this.props.token}.png`);
     const fullHexStyle = {
@@ -46,7 +71,21 @@ class TokenHex extends React.Component {
   }
 }
 
+/**
+ * Renders an empty hex field.
+ */
 class EmptyHex extends React.Component {
+  static propTypes = {
+    /** Path to the background image. */
+    backgroundImage: PropTypes.string,
+    /**
+     * A function to call when the hex is clicked.
+     * @param {!SyntheticEvent} Mouse click event.
+     * @param {number} Position of the hex.
+     */
+    onClick: PropTypes.func.isRequired,
+  }
+
   render() {
     let backgroundImage = null;
     if (this.props.backgroundImage)
@@ -72,19 +111,22 @@ class EmptyHex extends React.Component {
 
 /*
  * Token cache components
- *
- * /------------------------------\
- * | TokenCache                   |
- * | /--------------------------\ |
- * | | TokenCacheContainer (x3) | |
- * | | /----------------------\ | |
- * | | | {Empty,Full}Hex      | | |
- * | | \----------------------/ | |
- * | \--------------------------/ |
- * \------------------------------/
  */
 
+/**
+ * Wraps one hex in player's token cache.
+ */
 class TokenCacheContainer extends React.Component {
+  static propTypes = {
+    /** The hex inside this field. */
+    children: PropTypes.oneOfType([
+      PropTypes.instanceOf(EmptyHex),
+      PropTypes.instanceOf(TokenHex),
+    ]),
+    /** Whether the cache is vertical. */
+    vertical: PropTypes.bool,
+  }
+
   render() {
     const containerStyle = {
       display: 'inline-block',
@@ -107,7 +149,44 @@ class TokenCacheContainer extends React.Component {
   }
 };
 
+/**
+ * Renders player's token cache.
+ * <pre>
+ * /------------------------------\
+ * | TokenCache                   |
+ * | /--------------------------\ |
+ * | | TokenCacheContainer (x3) | |
+ * | | /----------------------\ | |
+ * | | | {Empty,Full}Hex      | | |
+ * | | \----------------------/ | |
+ * | \--------------------------/ |
+ * \------------------------------/
+ * </pre>
+ */
 class TokenCache extends React.Component {
+  static propTypes = {
+    /** Position of the currently selected hex. */
+    activeHex: PropTypes.number,
+    /** Array of all board cells. */
+    cells: PropTypes.arrayOf(PropTypes.object).isRequired,
+    /**
+     * A function to call when the hex is clicked.
+     * @param {!SyntheticEvent} Mouse click event.
+     * @param {number} Position of the hex.
+     */
+    onClick: PropTypes.func.isRequired,
+    /**
+     * A function to call when the scroll wheel is scrolled over the hex.
+     * @param {!SyntheticEvent} Mouse wheel event.
+     * @param {number} Position of the hex.
+     */
+    onWheel: PropTypes.func.isRequired,
+    /* Index of the player this cache belongs to. */
+    player: PropTypes.number,
+    /** Whether the cache is vertical. */
+    vertical: PropTypes.bool,
+  }
+
   render() {
     let items = [];
     for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
@@ -143,19 +222,13 @@ class TokenCache extends React.Component {
 }
 
 /*
- * Playable part of the board.
- *
- * /--------------------------------------------------------\
- * | PlayBoard                                              |
- * | /--------------------------\ /-----------------------\ |
- * | | PlayBoardContainer (x19) | | PlayBoardSpacer (x26) | |
- * | | /----------------------\ | |                       | |
- * | | | {Empty,Full}Hex      | | |                       | |
- * | | \----------------------/ | |                       | |
- * | \--------------------------/ \-----------------------| |
- * \--------------------------------------------------------/
+ * Components of the playable part of the board.
  */
 
+/**
+ * Renders the spacer that occupies the table layout cells not related
+ * to any hex.
+ */
 class PlayBoardSpacer extends React.Component {
   render() {
     const invisibleCellStyle = {
@@ -172,7 +245,18 @@ class PlayBoardSpacer extends React.Component {
   }
 }
 
+/**
+ * Wraps one hex on playing board.
+ */
 class PlayBoardContainer extends React.Component {
+  static propTypes = {
+    /** The hex inside this field. */
+    children: PropTypes.oneOfType([
+      PropTypes.instanceOf(EmptyHex),
+      PropTypes.instanceOf(TokenHex),
+    ]),
+  }
+
   render() {
     const cellStyle = {
       border: 'none',
@@ -202,7 +286,40 @@ class PlayBoardContainer extends React.Component {
   }
 }
 
+/**
+ * Renders the playable part of the board.
+ * <pre>
+ * /--------------------------------------------------------\
+ * | PlayBoard                                              |
+ * | /--------------------------\ /-----------------------\ |
+ * | | PlayBoardContainer (x19) | | PlayBoardSpacer (x26) | |
+ * | | /----------------------\ | |                       | |
+ * | | | {Empty,Full}Hex      | | |                       | |
+ * | | \----------------------/ | |                       | |
+ * | \--------------------------/ \-----------------------| |
+ * \--------------------------------------------------------/
+ * </pre>
+ */
 class PlayBoard extends React.Component {
+  static propTypes = {
+    /** Position of the currently selected hex. */
+    activeHex: PropTypes.number,
+    /** Array of all board cells. */
+    cells: PropTypes.arrayOf(PropTypes.object).isRequired,
+    /**
+     * A function to call when the hex is clicked.
+     * @param {!SyntheticEvent} Mouse click event.
+     * @param {number} Position of the hex.
+     */
+    onClick: PropTypes.func.isRequired,
+    /**
+     * A function to call when the scroll wheel is scrolled over the hex.
+     * @param {!SyntheticEvent} Mouse wheel event.
+     * @param {number} Position of the hex.
+     */
+    onWheel: PropTypes.func.isRequired,
+  }
+
   render() {
     const tableStyle = {
       display: 'table',
@@ -262,8 +379,9 @@ class PlayBoard extends React.Component {
   }
 }
 
-/*
- * Main board component that composites all the parts.
+/**
+ * Composites all the parts of the complete board.
+ * <pre>
  * /---------------------------------------------\
  * | HexBoard                                    |
  * | /-----------------------------------------\ |
@@ -276,17 +394,40 @@ class PlayBoard extends React.Component {
  * | | TokenCache                              | |
  * | \-----------------------------------------/ |
  * \---------------------------------------------/
+ * </pre>
  */
-
 export class HexBoard extends React.Component {
+  static propTypes = {
+    /** The game metadata */
+    ctx: PropTypes.object.isRequired,
+    /** The game state */
+    G: PropTypes.object.isRequired,
+    /** Contains functions to dispatch game moves. */
+    moves: PropTypes.object.isRequired,
+    /** The player ID associated with the client. */
+    playerID: PropTypes.string.isRequired,
+  }
+
   constructor(props) {
     super(props);
+    /** State of the component used for rendering. */
     this.state = {
+      /** Position of the currently selected hex. */
       activeHex: null
     }
+    /**
+     * Current position of the mouse wheel in the units same as
+     * SyntheticEvent.deltaY.
+     */
     this.wheelPos = 0;
   }
 
+  /**
+   * Handler for hex click events.
+   * @param {!SyntheticEvent} Mouse click event.
+   * @param {number} Position of the hex.
+   * @private
+   */
   onClick = (e, pos) => {
     if (this.props.ctx.currentPlayer !== this.props.playerID)
       return;
@@ -318,6 +459,12 @@ export class HexBoard extends React.Component {
     }
   }
 
+  /**
+   * Handler for hex wheel events.
+   * @param {!SyntheticEvent} Mouse wheel event.
+   * @param {number} Position of the hex.
+   * @private
+   */
   onWheel = (e, pos) => {
     if (this.state.activeHex !== pos)
       return;
