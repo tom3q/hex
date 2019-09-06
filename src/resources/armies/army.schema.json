@@ -83,6 +83,9 @@
           "instant": {
             "type": "boolean"
           },
+	  "foundation": {
+	    "type": "boolean"
+	  },
           "count": {
             "type": "integer",
             "minimum": 1,
