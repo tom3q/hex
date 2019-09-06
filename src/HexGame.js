@@ -69,18 +69,33 @@ export const HexGame = Game({
 
   moves: {
     moveToken(G, ctx, from, to) {
+      if (HexUtils.PosIsCache(to) &&
+          HexUtils.CachePosToPlayer(to) !== Number(ctx.currentPlayer))
+        return INVALID_MOVE;
+
+      if (G.cells[from] === null)
+        return INVALID_MOVE;
+
       if (G.cells[to] !== null)
         return INVALID_MOVE;
 
-      G.cells[to] = G.cells[from];
+      const hex = G.cells[from];
+      if (hex.player !== ctx.currentPlayer)
+        return INVALID_MOVE;
+
       G.cells[from] = null;
+      G.cells[to] = hex;
     },
 
     rotateToken(G, ctx, pos, rotation) {
       if (G.cells[pos] === null)
         return INVALID_MOVE;
 
-      G.cells[pos].rotation = (G.cells[pos].rotation + rotation) % 6;
+      const hex = G.cells[pos];
+      if (hex.player !== ctx.currentPlayer)
+        return INVALID_MOVE;
+
+      hex.rotation = (hex.rotation + rotation) % 6;
     },
   },
 
