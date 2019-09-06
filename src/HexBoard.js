@@ -379,6 +379,50 @@ class PlayBoard extends React.Component {
   }
 }
 
+class Button extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      active: false,
+    };
+  }
+
+  onMouseOver(e) {
+    this.setState({
+      active: true,
+    });
+  }
+
+  onMouseOut(e) {
+    this.setState({
+      active: false,
+    });
+  }
+
+  render() {
+    let image;
+    if (this.state.active) {
+      image = require(`resources/${this.props.image}_pressed_x4.png`);
+    } else {
+      image = require(`resources/${this.props.image}_x4.png`);
+    }
+    const buttonStyle = {
+      backgroundImage: `url(${image})`,
+      backgroundSize: 'contain',
+      display: 'inline-block',
+      height: '68px',
+      width: '100px',
+    };
+    return (
+      <div style={buttonStyle}
+           onClick={(e) => this.props.onClick(e)}
+           onMouseOver={(e) => this.onMouseOver(e)}
+           onMouseOut={(e) => this.onMouseOut(e)}>
+      </div>
+    )
+  }
+}
+
 /**
  * Composites all the parts of the complete board.
  * <pre>
@@ -508,6 +552,10 @@ export class HexBoard extends React.Component {
       lineHeight: 'normal',
       verticalAlign: 'middle',
     };
+    const bottomSpacerStyle = {
+      display: 'inline-block',
+      width: '100px',
+    };
 
     let caches = [];
     for (let i = 0; i < HexUtils.MAX_PLAYERS; ++i) {
@@ -543,7 +591,12 @@ export class HexBoard extends React.Component {
           </div>
         </div>
         <div style={horizontalCacheStyle}>
+            <div style={bottomSpacerStyle}></div>
+            <div style={bottomSpacerStyle}></div>
             {caches[0]}
+            <div style={bottomSpacerStyle}></div>
+            <Button image='hand_view_button_end_turn'
+                    onClick={(e) => this.props.events.endTurn()}/>
         </div>
       </div>
     );
