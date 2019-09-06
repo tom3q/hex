@@ -33,3 +33,14 @@ export function XyIsValid(x, y) {
 export function XyToPos(x, y) {
   return MAX_PLAYERS * CACHE_SIZE + y * BOARD_WIDTH + x;
 }
+
+export function CachePosToPlayer(pos) {
+  const player = Math.floor(pos / CACHE_SIZE);
+  if (player >= MAX_PLAYERS)
+    return -1;
+  return player;
+}
+
+export function PosIsCache(pos) {
+  return pos < CACHE_SIZE * MAX_PLAYERS;
+}

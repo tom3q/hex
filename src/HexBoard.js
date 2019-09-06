@@ -1,38 +1,194 @@
 import React from 'react';
 import * as HexUtils from 'HexUtils.js';
 
-class HexBoardSpacer extends React.Component {
+/*
+ * Components representing single hex.
+ */
+
+class TokenHex extends React.Component {
   render() {
-    const invisibleCellStyle = {
-      display: 'table-cell',
-      border: 'none',
-      width: '92px',
-      height: '52px',
-      visibility: 'hidden',
+    const hexImage=require(`resources/${this.props.token}.png`);
+    const fullHexStyle = {
+      backgroundImage: `url(${hexImage})`,
+      backgroundPosition: 'center center',
+      backgroundSize: '118% 118%',
+      clipPath: 'polygon(  0% 50%, 25%   0%, 75%   0%, ' +
+                        '100% 50%, 75% 100%, 25% 100%)',
+      height: '100%',
+      position: 'relative',
+      transform: `rotate(${this.props.rotation * 60}deg)`,
+      width: '100%',
+      zIndex: this.props.active ? 10 : 20,
+    };
+    const overlayImage=require('resources/glow.png');
+    const overlayStyle = {
+      backgroundImage: `url(${overlayImage})`,
+      backgroundPosition: 'center center',
+      backgroundSize: '110% 110%',
+      height: '100%',
+      left: '0px',
+      position: 'absolute',
+      top: '0px',
+      visibility: this.props.active ? 'visible' : 'hidden',
+      width: '100%',
+      zIndex: 15,
     };
     return (
-      <div style={invisibleCellStyle}></div>
+      <>
+        <div style={fullHexStyle}
+             onClick={(e) => this.props.onClick(e, this.props.pos)}
+             onWheel={(e) => this.props.onWheel(e, this.props.pos)}></div>
+        <div style={overlayStyle}
+             onClick={(e) => this.props.onClick(e, this.props.pos)}
+             onWheel={(e) => this.props.onWheel(e, this.props.pos)}></div>
+      </>
     );
   }
 }
 
-class HexBoardContainer extends React.Component {
+class EmptyHex extends React.Component {
+  render() {
+    let backgroundImage = null;
+    if (this.props.backgroundImage)
+      backgroundImage = `url(${this.props.backgroundImage})`;
+    const cacheEmptyStyle = {
+      backgroundImage: backgroundImage,
+      backgroundPosition: 'center center',
+      backgroundSize: '118% 118%',
+      clipPath: 'polygon(  0% 50%, 25%   0%, 75%   0%, ' +
+                        '100% 50%, 75% 100%, 25% 100%)',
+      height: '100%',
+      position: 'relative',
+      width: '100%',
+      zIndex: 30,
+    };
+    return (
+      <div style={cacheEmptyStyle}
+           onClick={(e) => this.props.onClick(e, this.props.pos)}>
+      </div>
+    );
+  }
+};
+
+/*
+ * Token cache components
+ *
+ * /------------------------------\
+ * | TokenCache                   |
+ * | /--------------------------\ |
+ * | | TokenCacheContainer (x3) | |
+ * | | /----------------------\ | |
+ * | | | {Empty,Full}Hex      | | |
+ * | | \----------------------/ | |
+ * | \--------------------------/ |
+ * \------------------------------/
+ */
+
+class TokenCacheContainer extends React.Component {
+  render() {
+    const containerStyle = {
+      display: 'inline-block',
+      height: '100px',
+      position: 'relative',
+      width: '118px',
+    };
+    const outerContainerStyle = {
+      display: 'inline-block',
+      textAlign: 'center',
+      width: this.props.vertical ? '100%' : null,
+    };
+    return (
+      <div style={outerContainerStyle}>
+        <div style={containerStyle}>
+          {this.props.children}
+        </div>
+      </div>
+    );
+  }
+};
+
+class TokenCache extends React.Component {
+  render() {
+    let items = [];
+    for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
+      const pos = this.props.player * HexUtils.CACHE_SIZE + i;
+      const hex = this.props.cells[pos];
+      let contents;
+      if (hex) {
+        const active = pos === this.props.activeHex;
+        contents = (
+          <TokenHex pos={pos} token={hex.token}
+                    rotation={hex.rotation} active={active}
+                    onClick={this.props.onClick}
+                    onWheel={this.props.onWheel}/>
+          );
+      } else {
+        const background=require('resources/disabled_background.png');
+        contents = <EmptyHex pos={pos}
+                             backgroundImage={background}
+                             onClick={this.props.onClick}/>;
+      }
+      items.push(
+        <TokenCacheContainer key={pos} vertical={this.props.vertical}>
+          {contents}
+        </TokenCacheContainer>
+      );
+    }
+    return (
+      <>
+       {items}
+      </>
+    );
+  }
+}
+
+/*
+ * Playable part of the board.
+ *
+ * /--------------------------------------------------------\
+ * | PlayBoard                                              |
+ * | /--------------------------\ /-----------------------\ |
+ * | | PlayBoardContainer (x19) | | PlayBoardSpacer (x26) | |
+ * | | /----------------------\ | |                       | |
+ * | | | {Empty,Full}Hex      | | |                       | |
+ * | | \----------------------/ | |                       | |
+ * | \--------------------------/ \-----------------------| |
+ * \--------------------------------------------------------/
+ */
+
+class PlayBoardSpacer extends React.Component {
+  render() {
+    const invisibleCellStyle = {
+      border: 'none',
+      display: 'table-cell',
+      height: '52px',
+      visibility: 'hidden',
+      width: '92px',
+    };
+    return (
+      <div style={invisibleCellStyle}>
+      </div>
+    );
+  }
+}
+
+class PlayBoardContainer extends React.Component {
   render() {
     const cellStyle = {
-      display: 'table-cell',
       border: 'none',
-      width: '92px',
+      display: 'table-cell',
       height: '52px',
+      width: '92px',
     };
     const overflowStyle = {
-      overflow: 'visible',
       height: '1px',
+      overflow: 'visible',
       width: '1px',
     };
     const containerStyle = {
-      width: '118px',
       height: '100px',
       position: 'relative',
+      width: '118px',
     };
     return (
       <div style={cellStyle}>
@@ -46,183 +202,81 @@ class HexBoardContainer extends React.Component {
   }
 }
 
-class HexBoardEmpty extends React.Component {
-  onClick = (e) => {
-    if (this.props.onClick)
-      this.props.onClick(e, this.props.pos);
-    e.stopPropagation();
-  }
-
+class PlayBoard extends React.Component {
   render() {
-    const emptyHexStyle = {
-      width: '100%',
-      height: '100%',
-      clipPath: 'polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%)',
-      zIndex: 30,
-      position: 'relative',
+    const tableStyle = {
+      display: 'table',
     };
+    const tbodyStyle = {
+      display: 'table-row-group',
+    };
+    const rowStyle = {
+      display: 'table-row',
+    };
+
+    let tbody = [];
+    for (let y = 0; y < HexUtils.BOARD_HEIGHT; y++) {
+      let cells = [];
+      for (let x = 0; x < HexUtils.BOARD_WIDTH; x++) {
+        const pos = HexUtils.XyToPos(x, y);
+        if (!HexUtils.XyIsValid(x, y)) {
+          cells.push(<PlayBoardSpacer key={pos}/>);
+          continue;
+        }
+
+        const hex = this.props.cells[pos];
+        let contents;
+        if (hex) {
+          const active = pos === this.props.activeHex;
+          contents = (
+            <TokenHex pos={pos} token={hex.token}
+                      rotation={hex.rotation} active={active}
+                      onClick={this.props.onClick}
+                      onWheel={this.props.onWheel}/>
+          );
+        } else {
+          contents = <EmptyHex pos={pos} onClick={this.props.onClick}/>
+        }
+
+        cells.push(
+          <PlayBoardContainer key={pos}>
+            {contents}
+          </PlayBoardContainer>
+        );
+      }
+
+      tbody.push(
+        <div style={rowStyle} key={y}>
+          {cells}
+        </div>
+      );
+    }
+
     return (
-      <div style={emptyHexStyle}
-           onClick={(e) => this.onClick(e)}>
-        {this.props.children}
-      </div>
-    );
-  }
-}
-
-class TokenCacheContainer extends React.Component {
-  render() {
-    let containerStyle = {
-      width: '118px',
-      height: '100px',
-      position: 'relative',
-      display: 'inline-block',
-    };
-    let outerContainerStyle = {
-      teouterContainerStyletAlign: 'center',
-      display: 'inline-block',
-    };
-
-    if (this.props.vertical)
-      outerContainerStyle.width = '100%';
-
-    return (
-      <div style={outerContainerStyle}>
-        <div style={containerStyle}>
-          {this.props.children}
+      <div style={tableStyle} id="board">
+        <div style={tbodyStyle}>
+          {tbody}
         </div>
       </div>
     );
   }
-};
-
-class TokenCacheEmpty extends React.Component {
-  render() {
-    const emptyBackground=require('resources/disabled_background.png');
-    const cacheEmptyStyle = {
-      backgroundImage: `url(${emptyBackground})`,
-      backgroundSize: '118% 118%',
-      backgroundPosition: 'center center',
-      width: '100%',
-      height: '100%',
-      clipPath: 'polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%)',
-      position: 'relative',
-      zIndex: 20,
-    };
-    return (
-      <HexBoardEmpty pos={this.props.pos}
-                     onClick={this.props.onClick}>
-        <div style={cacheEmptyStyle}></div>
-      </HexBoardEmpty>
-    );
-  }
-};
-
-class HexBoardToken extends React.Component {
-  constructor(props) {
-    super(props);
-    this.wheelPos = 0;
-    this.state = {
-      floating: false,
-    };
-  }
-
-  onWheel = (e) => {
-    if (!this.props.onRotate)
-      return;
-    if (!this.props.active)
-      return;
-    if (this.props.locked && !this.props.canRotate)
-      return;
-    this.wheelPos += e.deltaY;
-    let steps = Math.floor(this.wheelPos / 128);
-    this.wheelPos -= steps * 128;
-    this.props.onRotate(this.props.pos, steps);
-  }
-
-  onClick = (e) => {
-    console.log('Clicked hex ' + this.props.pos);
-    if (this.props.onClick)
-      this.props.onClick(e, this.props.pos);
-    e.stopPropagation();
-  }
-
-  render() {
-    const fullHex=require('resources/' + this.props.token + '.png');
-    let fullHexStyle = {
-      backgroundImage: `url(${fullHex})`,
-      backgroundSize: '118% 118%',
-      backgroundPosition: 'center center',
-      width: '100%',
-      height: '100%',
-      transform: 'rotate(' + this.props.rotation * 60 + 'deg)',
-      clipPath: 'polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%)',
-      position: 'relative',
-      zIndex: 20,
-    };
-    if (this.state.floating) {
-      fullHexStyle.position = 'fixed';
-    }
-    const overlayImg=require('resources/glow.png');
-    let overlayStyle = {
-      backgroundImage: `url(${overlayImg})`,
-      backgroundSize: '110% 110%',
-      backgroundPosition: 'center center',
-      width: '100%',
-      height: '100%',
-      position: 'absolute',
-      left: '0px',
-      top: '0px',
-      visibility: 'hidden',
-      zIndex: 15,
-    };
-    if (this.props.active) {
-      overlayStyle.visibility = 'visible';
-      fullHexStyle.zIndex = 10;
-    }
-    return (
-      <>
-      <div style={fullHexStyle}
-           onClick={(e) => this.onClick(e)}
-           onWheel={(e) => this.onWheel(e)}></div>
-      <div style={overlayStyle}
-           onClick={(e) => this.onClick(e)}
-           onWheel={(e) => this.onWheel(e)}></div>
-      </>
-    );
-  }
 }
 
-class TokenCache extends React.Component {
-  render() {
-    let items = [];
-    for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
-      let pos = this.props.player * HexUtils.CACHE_SIZE + i;
-      let hex = this.props.cells[pos];
-      if (hex)
-        items.push(
-          <TokenCacheContainer key={pos} vertical={this.props.vertical}>
-            <HexBoardToken pos={pos}
-                           token={hex.token}
-                           rotation={hex.rotation}
-                           active={this.props.activeHex === pos}
-                           onClick={this.props.onClick}/>
-          </TokenCacheContainer>
-        );
-      else
-        items.push(
-          <TokenCacheContainer key={pos} vertical={this.props.vertical}>
-            <TokenCacheEmpty pos={pos} onClick={this.props.onClick}/>
-          </TokenCacheContainer>
-        );
-    }
-    return (
-      <>
-        {items}
-      </>
-    );
-  }
-}
+/*
+ * Main board component that composites all the parts.
+ * /---------------------------------------------\
+ * | HexBoard                                    |
+ * | /-----------------------------------------\ |
+ * | | TokenCache                              | |
+ * | \-----------------------------------------/ |
+ * | /------------\ /-----------\ /------------\ |
+ * | | TokenCache | | PlayBoard | | TokenCache | |
+ * | \------------/ \-----------/ \------------/ |
+ * | /-----------------------------------------\ |
+ * | | TokenCache                              | |
+ * | \-----------------------------------------/ |
+ * \---------------------------------------------/
+ */
 
 export class HexBoard extends React.Component {
   constructor(props) {
@@ -230,48 +284,53 @@ export class HexBoard extends React.Component {
     this.state = {
       activeHex: null
     }
+    this.wheelPos = 0;
   }
 
   onClick = (e, pos) => {
     if (this.props.ctx.currentPlayer !== this.props.playerID)
       return;
 
-    if (pos === null) {
-      this.setState({
-        activeHex: null
-      });
+    // Validate this here as well to avoid deactivating the hex
+    if (HexUtils.PosIsCache(pos) &&
+        HexUtils.CachePosToPlayer(pos) !== Number(this.props.playerID))
       return;
-    }
 
-    let hex = this.props.G.cells[pos];
+    const hex = this.props.G.cells[pos];
     if (hex) {
-      this.setState(state => ({
-        activeHex: (pos === state.activeHex
-                    || hex.player !== this.props.playerID) ?
-                    null : pos,
-      }));
-      return;
+      // Clicked a TokenHex
+      this.setState((state) => {
+        let state_change = {};
+        if (pos === state.activeHex)
+          state_change.activeHex = null;
+        else if (hex.player === this.props.playerID)
+          state_change.activeHex = pos;
+        return state_change;
+      });
+    } else {
+      // Clicked an EmptyHex
+      if (this.state.activeHex !== null) {
+        this.props.moves.moveToken(this.state.activeHex, pos);
+        this.setState({
+          activeHex: null
+        });
+      }
     }
-
-    if (this.state.activeHex !== null)
-      this.props.moves.moveToken(this.state.activeHex, pos);
-    this.setState({
-      activeHex: null
-    });
-    console.log('Clicked empty hex ' + pos + '!');
   }
 
-  onRotateToken = (pos, rotation) => {
-    this.props.moves.rotateToken(pos, rotation);
+  onWheel = (e, pos) => {
+    if (this.state.activeHex !== pos)
+      return;
+
+    this.wheelPos += e.deltaY;
+    const steps = Math.floor(this.wheelPos / 128);
+    this.wheelPos -= steps * 128;
+
+    this.props.moves.rotateToken(pos, steps);
   };
 
   render() {
     const boardBackground=require('resources/board.jpg');
-
-    const rowStyle = {
-      display: 'table-row',
-    };
-
     const boardStyle = {
       backgroundImage: `url(${boardBackground})`,
       backgroundPosition: '0px 50px',
@@ -279,91 +338,46 @@ export class HexBoard extends React.Component {
       width: '1024px',
       zIndex: 0,
     };
-
     const horizontalCacheStyle = {
-      width: '100%',
       height: '130px',
-      textAlign: 'center',
       marginTop: '30px',
+      textAlign: 'center',
+      width: '100%',
     };
-
     const verticalCacheStyle = {
       display: 'inline-block',
-      width: '270px',
+      lineHeight: 'normal',
       textAlign: 'center',
       verticalAlign: 'middle',
-      lineHeight: 'normal',
+      width: '270px',
     };
-
     const middleContainerStyle = {
-      verticalAlign: 'middle',
       lineHeight: '523px',
+      verticalAlign: 'middle',
     };
-
     const tableContainerStyle = {
       display: 'inline-block',
-      verticalAlign: 'middle',
-      lineHeight: 'normal',
       height: '523px',
+      lineHeight: 'normal',
+      verticalAlign: 'middle',
     };
-
-    const tableStyle = {
-      display: 'table',
-    };
-
-    const tbodyStyle = {
-      display: 'table-row-group',
-    };
-
-    let tbody = [];
-    for (let y = 0; y < HexUtils.BOARD_HEIGHT; y++) {
-      let cells = [];
-      for (let x = 0; x < HexUtils.BOARD_WIDTH; x++) {
-        let pos = HexUtils.XyToPos(x, y);
-        if (HexUtils.XyIsValid(x, y)) {
-          let hex = this.props.G.cells[pos];
-          if (hex) {
-            cells.push(
-              <HexBoardContainer key={pos}>
-                <HexBoardToken pos={pos}
-                               token={hex.token}
-                               rotation={hex.rotation}
-                               active={this.state.activeHex === pos}
-                               onClick={this.onClick}
-                               onRotate={this.onRotateToken}/>
-              </HexBoardContainer>
-            );
-          } else {
-            cells.push(
-              <HexBoardContainer key={pos}>
-                <HexBoardEmpty pos={pos}
-                               onClick={this.onClick}/>
-              </HexBoardContainer>
-            );
-          }
-        } else {
-          cells.push(<HexBoardSpacer key={pos}/>);
-        }
-      }
-      tbody.push(<div style={rowStyle} key={y}>{cells}</div>);
-    }
 
     let caches = [];
     for (let i = 0; i < HexUtils.MAX_PLAYERS; ++i) {
-      const player = (parseInt(this.props.playerID) + i)
+      const player = (Number(this.props.playerID) + i)
                      % HexUtils.MAX_PLAYERS;
       caches.push(
         <TokenCache vertical={i % 2}
                     player={player}
                     cells={this.props.G.cells}
                     activeHex={this.state.activeHex}
-                    onClick={!i ? this.onClick : null}/>
+                    onClick={this.onClick}
+                    onWheel={this.onWheel}/>
       );
     }
 
     return (
-      <div style={boardStyle}
-           onClick={(e) => this.onClick(e)}>
+      <div style={boardStyle}>
         <div style={horizontalCacheStyle}>
           {caches[2]}
         </div>
@@ -372,9 +386,10 @@ export class HexBoard extends React.Component {
             {caches[1]}
           </div>
           <div style={tableContainerStyle}>
-            <div style={tableStyle} id="board">
-              <div style={tbodyStyle}>{tbody}</div>
-            </div>
+            <PlayBoard cells={this.props.G.cells}
+                       activeHex={this.state.activeHex}
+                       onClick={this.onClick}
+                       onWheel={this.onWheel}/>
           </div>
           <div style={verticalCacheStyle}>
             {caches[3]}
