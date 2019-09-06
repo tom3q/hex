@@ -408,7 +408,8 @@ class Button extends React.Component {
     }
     const buttonStyle = {
       backgroundImage: `url(${image})`,
-      backgroundSize: 'contain',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: '100% 100%',
       display: 'inline-block',
       height: '68px',
       width: '100px',
@@ -595,6 +596,8 @@ export class HexBoard extends React.Component {
             <div style={bottomSpacerStyle}></div>
             {caches[0]}
             <div style={bottomSpacerStyle}></div>
+            <Button image='toolbox_undo'
+                    onClick={(e) => this.props.undo()}/>
             <Button image='hand_view_button_end_turn'
                     onClick={(e) => this.props.events.endTurn()}/>
         </div>
