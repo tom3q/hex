@@ -1,0 +1,236 @@
+{
+  "id": "neojungle",
+  "name": "Neojungle",
+  "tokens": [
+    {
+      "id": "hq",
+      "hq": true,
+      "initiative": 0,
+      "attacks": [
+        {
+ 	  "type": "melee",
+	  "angle": -1
+	}
+      ]
+    },
+    {
+      "id": "monster",
+      "initiative": 0,
+      "count": 1,
+      "health": 2,
+      "attacks": [
+	{
+	  "type": "melee",
+  	  "damage": 3	  
+	},
+	{
+	  "type": "melee",
+	  "angle": 1,
+	  "damage": 2
+	},
+	{
+	  "type": "melee",
+	  "angle": 2
+	},
+	{
+	  "type": "melee",
+	  "angle": 4
+	},
+	{
+	  "type": "melee",
+	  "angle": 5,
+	  "damage": 2
+	}
+      ]
+    },
+    {
+      "id": "slicer",
+      "initiative": 2,
+      "count": 4,
+      "attacks": [
+        {
+	  "type": "melee"
+	},
+	{
+	  "type": "melee",
+	  "angle": 1
+	},
+	{
+	  "type": "melee",
+	  "angle": 5
+	}
+      ]
+    },
+    {
+      "id": "nightshade",
+      "initiative": 2,
+      "count": 2,
+      "attacks": [
+        {
+	  "type": "melee"
+	},
+	{
+	  "type": "melee",
+	  "angle": 5
+	}
+      ],
+      "abilities": [
+        {
+	  "type": "venom"
+	}
+      ]
+    },
+    {
+      "id": "crusher",
+      "initiative": 1,
+      "count": 3,
+      "attacks": [
+	{
+	  "type": "melee",
+	  "damage": 2
+	}
+      ]
+    },
+    {
+      "id": "wall_of_trees",
+      "count": 1,
+      "health": 3,
+      "shields": [
+      0,
+      1,
+      5
+      ]
+    },
+    {
+      "id": "net_fighter",
+      "count": 3,
+      "health": 1,
+      "modifiers": [
+        {
+	  "type": "net",
+	  "hostile": true
+	}
+      ]
+    },
+    {
+      "id": "swarm",
+      "initiative": 1,
+      "count": 2,
+      "attacks": [
+        {
+          "type": "melee",
+	  "damage": 1,
+	  "angle": -1
+	}
+      ]
+    },
+    {
+      "id": "vines",
+      "count": 1,
+      "health": 1,
+      "modifiers": [
+        {
+	  "type": "initiative",
+	  "value": 1,
+	  "hostile": true,
+	  "angle": -1
+	}
+      ]
+    },
+    {
+      "id": "medic",
+      "count": 3,
+      "health": 1,
+      "modifiers": [
+        {
+	  "type": "medic"
+	}
+      ]
+    },
+    {
+      "id": "symbiont_alfa",
+      "count": 1,
+      "health": 1,
+      "modifiers": [
+	{
+	  "type": "melee",
+	  "value": 1
+	}
+      ],
+      "shields": [ 3 ]
+    },
+    {
+      "id": "symbiont_beta",
+      "count": 1,
+      "health": 1,
+      "modifiers": [
+        {
+ 	  "type": "initiative",
+	  "value": 1
+	}
+      ],
+      "shields": [ 3 ]
+    },
+    {
+      "id": "symbiont_beta",
+      "count": 1,
+      "health": 1,
+      "modifiers": [
+        {
+	  "type": "melee",
+	  "value": 1
+        },
+	{
+	  "type": "initiative",
+	  "value": 1
+	}
+      ],
+      "shields": [ 3 ]
+    },
+    {
+      "id": "roots",
+      "count": 2,
+      "foundation": true
+    },
+    {
+      "id": "battle",
+      "count": 4,
+      "instant": true,
+      "abilities": [
+	{
+ 	  "type": "battle"
+	}
+      ]
+    },
+    {
+      "id": "castling",
+      "count": 2,
+      "instant": true,
+      "abilities": [
+        {
+          "type": "castling"
+        }
+     ]
+    },
+    {
+      "id": "move",
+      "count": 1,
+      "instant": true,
+      "abilities": [
+	{
+ 	  "type": "move"
+	}
+      ]
+    },
+    {
+      "id": "small_bomb",
+      "count": 1,
+      "instant": true,
+      "abilities": [
+        {
+	  "type": "small_bomb"
+	}
+      ]
+    }
+  ]
+}
