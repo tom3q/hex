@@ -393,46 +393,112 @@ class PlayBoard extends React.Component {
   }
 }
 
+/*
+ * Utility components.
+ */
+
+/**
+ * Renders a clickable button.
+ */
 class Button extends React.Component {
+  static propTypes = {
+    /** Whether the button is greyed out. */
+    disabled: PropTypes.bool,
+    /** Default button image. */
+    image: PropTypes.string.isRequired,
+    /** Image to display when the pointer is down on the button. */
+    imageDown: PropTypes.string.isRequired,
+    /** Height of the button as CSS string. */
+    height: PropTypes.string.isRequired,
+    /**
+     * The function to call when the button is clicked.
+     * @param {!SyntethicEvent} Click event.
+     */
+    onClick: PropTypes.func.isRequired,
+    /** Width of the button as CSS string. */
+    width: PropTypes.string.isRequired,
+  }
+
   constructor(props) {
     super(props);
+    /** @private @const {!Object} Reference to the button div node. */
+    this.node = React.createRef();
+    /** @private {!Object} State of the component used for rendering. */
     this.state = {
-      active: false,
+      /** {boolean} Whether the pointer is down. */
+      down: false,
+      /** {boolean} Whether the buttom is hovered. */
+      hover: false,
     };
   }
 
-  onMouseOver(e) {
+  componentDidMount() {
+    /*
+     * TODO(https://github.com/facebook/react/issues/2043):
+     * Remove this when React starts attaching the events correctly.
+     * See also: https://github.com/facebook/react/issues/9809.
+     */
+    this.node.current.oncontextmenu = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+  }
+
+  onPointerDown = (e) => {
     this.setState({
-      active: true,
+      down: true,
     });
   }
 
-  onMouseOut(e) {
+  onPointerEnter = (e) => {
     this.setState({
-      active: false,
+      down: e.buttons & 1 != 0,
+      hover: true,
     });
+  }
+
+  onPointerLeave = (e) => {
+    this.setState({
+      down: false,
+      hover: false,
+    });
+  }
+
+  onPointerUp = (e) => {
+    this.setState({
+      down: false,
+    });
+    this.props.onClick(e);
   }
 
   render() {
     let image;
-    if (this.state.active) {
-      image = require(`resources/${this.props.image}_pressed_x4.png`);
+    if (!this.props.disabled && this.state.down) {
+      image = require(`resources/${this.props.imageDown}`);
     } else {
-      image = require(`resources/${this.props.image}_x4.png`);
+      image = require(`resources/${this.props.image}`);
+    }
+    let filter = null;
+    if (this.props.disabled) {
+      filter = 'grayscale(100%)';
+    } else if (this.state.hover && !this.state.down) {
+      filter = 'brightness(130%)';
     }
     const buttonStyle = {
       backgroundImage: `url(${image})`,
       backgroundRepeat: 'no-repeat',
       backgroundSize: '100% 100%',
       display: 'inline-block',
-      height: '68px',
-      width: '100px',
+      filter: filter,
+      height: this.props.height,
+      width: this.props.width,
     };
     return (
-      <div style={buttonStyle}
-           onClick={(e) => this.props.onClick(e)}
-           onMouseOver={(e) => this.onMouseOver(e)}
-           onMouseOut={(e) => this.onMouseOut(e)}>
+      <div style={buttonStyle} ref={this.node}
+           onPointerEnter={(e) => this.onPointerEnter(e)}
+           onPointerLeave={(e) => this.onPointerLeave(e)}
+           onPointerDown={(e) => this.onPointerDown(e)}
+           onPointerUp={(e) => this.onPointerUp(e)}>
       </div>
     )
   }
@@ -574,7 +640,7 @@ export class HexBoard extends React.Component {
     };
     const bottomSpacerStyle = {
       display: 'inline-block',
-      width: '100px',
+      width: '90px',
     };
 
     let caches = [];
@@ -591,6 +657,8 @@ export class HexBoard extends React.Component {
       );
     }
 
+    const playerActive =
+      this.props.ctx.currentPlayer === this.props.playerID;
     return (
       <div style={boardStyle}>
         <div style={horizontalCacheStyle}>
@@ -613,11 +681,16 @@ export class HexBoard extends React.Component {
         <div style={horizontalCacheStyle}>
             <div style={bottomSpacerStyle}></div>
             <div style={bottomSpacerStyle}></div>
+            <div style={bottomSpacerStyle}></div>
             {caches[0]}
             <div style={bottomSpacerStyle}></div>
-            <Button image='toolbox_undo'
+            <Button width='80px' height='80px' disabled={!playerActive}
+                    image='toolbox_undo_x4.png'
+                    imageDown='toolbox_undo_pressed_x4.png'
                     onClick={(e) => this.props.undo()}/>
-            <Button image='hand_view_button_end_turn'
+            <Button width='100px' height='80px' disabled={!playerActive}
+                    image='hand_view_button_end_turn_x4.png'
+                    imageDown='hand_view_button_end_turn_pressed_x4.png'
                     onClick={(e) => this.props.events.endTurn()}/>
         </div>
       </div>
