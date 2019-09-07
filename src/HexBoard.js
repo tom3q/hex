@@ -465,6 +465,8 @@ export class HexBoard extends React.Component {
     moves: PropTypes.object.isRequired,
     /** The player ID associated with the client. */
     playerID: PropTypes.string.isRequired,
+    /** The function to undo a game move. */
+    undo: PropTypes.func.isRequired,
   }
 
   constructor(props) {
