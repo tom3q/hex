@@ -643,7 +643,7 @@ export class HexBoard extends React.Component {
     };
     const bottomSpacerStyle = {
       display: 'inline-block',
-      width: '90px',
+      width: '100px',
     };
 
     let caches = [];
@@ -683,14 +683,18 @@ export class HexBoard extends React.Component {
         </div>
         <div style={horizontalCacheStyle}>
             <div style={bottomSpacerStyle}></div>
-            <div style={bottomSpacerStyle}></div>
-            <div style={bottomSpacerStyle}></div>
-            {caches[0]}
-            <div style={bottomSpacerStyle}></div>
-            <Button width='80px' height='80px' disabled={!playerActive}
+            <Button width='100px' height='100px' disabled={!playerActive}
                     image='toolbox_undo_x4.png'
                     imageDown='toolbox_undo_pressed_x4.png'
                     onClick={(e) => this.props.undo()}/>
+            <div style={bottomSpacerStyle}></div>
+            {caches[0]}
+            <div style={bottomSpacerStyle}></div>
+            <Button width='100px' height='80px' rotation='180'
+                    disabled={!playerActive}
+                    image='hand_view_button_cancel_x4.png'
+                    imageDown='hand_view_button_cancel_pressed_x4.png'
+                    onClick={(e) => this.props.moves.discardCache()}/>
             <Button width='100px' height='80px' disabled={!playerActive}
                     image='hand_view_button_end_turn_x4.png'
                     imageDown='hand_view_button_end_turn_pressed_x4.png'
