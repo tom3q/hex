@@ -415,6 +415,8 @@ class Button extends React.Component {
      * @param {!SyntethicEvent} Click event.
      */
     onClick: PropTypes.func.isRequired,
+    /** Rotation of the button in degrees. */
+    rotation: PropTypes.number,
     /** Width of the button as CSS string. */
     width: PropTypes.string.isRequired,
   }
@@ -491,6 +493,7 @@ class Button extends React.Component {
       display: 'inline-block',
       filter: filter,
       height: this.props.height,
+      transform: `rotate(${this.props.rotation}deg)`,
       width: this.props.width,
     };
     return (
