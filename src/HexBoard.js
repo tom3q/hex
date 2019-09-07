@@ -540,7 +540,8 @@ export class HexBoard extends React.Component {
     const steps = Math.floor(this.wheelPos / 128);
     this.wheelPos -= steps * 128;
 
-    this.props.moves.rotateToken(pos, steps);
+    if (Math.abs(steps) >= 1)
+      this.props.moves.rotateToken(pos, steps);
   };
 
   render() {
