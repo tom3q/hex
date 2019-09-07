@@ -139,10 +139,7 @@ class EmptyHex extends React.Component {
 class TokenCacheContainer extends React.Component {
   static propTypes = {
     /** The hex inside this field. */
-    children: PropTypes.oneOfType([
-      PropTypes.instanceOf(EmptyHex),
-      PropTypes.instanceOf(TokenHex),
-    ]),
+    children: PropTypes.element.isRequired,
     /** Whether the cache is vertical. */
     vertical: PropTypes.bool,
   }
@@ -271,10 +268,7 @@ class PlayBoardSpacer extends React.Component {
 class PlayBoardContainer extends React.Component {
   static propTypes = {
     /** The hex inside this field. */
-    children: PropTypes.oneOfType([
-      PropTypes.instanceOf(EmptyHex),
-      PropTypes.instanceOf(TokenHex),
-    ]),
+    children: PropTypes.element.isRequired,
   }
 
   render() {
