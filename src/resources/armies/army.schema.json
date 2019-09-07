@@ -47,6 +47,32 @@
             "attacks"
           ]
         },
+        "if": {
+          "required": [ "instant" ],
+          "properties": { "instant": { "const": true } }
+        },
+        "then": {
+          "required": [ "abilities" ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [ "hq" ]
+              },
+              {
+                "required": [ "health" ]
+              }
+            ]
+          }
+        },
+        "if": {
+          "required": [ "hq" ],
+          "properties": { "hq": { "const": true } }
+        },
+        "then": {
+          "not": {
+            "required": [ "health" ]
+          }
+        },
         "properties": {
           "id": {
             "type": "string"
