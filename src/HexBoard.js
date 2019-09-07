@@ -582,7 +582,7 @@ export class HexBoard extends React.Component {
       const player = (Number(this.props.playerID) + i)
                      % HexUtils.MAX_PLAYERS;
       caches.push(
-        <TokenCache vertical={i % 2}
+        <TokenCache vertical={i % 2 !== 0}
                     player={player}
                     cells={this.props.G.cells}
                     activeHex={this.state.activeHex}
