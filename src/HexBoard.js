@@ -31,6 +31,26 @@ class TokenHex extends React.Component {
     token: PropTypes.string.isRequired,
   }
 
+  constructor(props) {
+    super(props);
+    /** @private @const {!Object} Reference to the token div node. */
+    this.tokenNode = React.createRef();
+    /** @private @const {!Object} Reference to the overlay div node. */
+    this.overlayNode = React.createRef();
+  }
+
+  componentDidMount() {
+    /*
+     * TODO(https://github.com/facebook/react/issues/2043):
+     * Remove this when React starts attaching the events correctly.
+     * See also: https://github.com/facebook/react/issues/9809.
+     */
+    this.tokenNode.current.onwheel =
+      (e) => this.props.onWheel(e, this.props.pos);
+    this.overlayNode.current.onwheel =
+      (e) => this.props.onWheel(e, this.props.pos);
+  }
+
   render() {
     const hexImage=require(`resources/${this.props.token}.png`);
     const fullHexStyle = {
@@ -60,12 +80,12 @@ class TokenHex extends React.Component {
     };
     return (
       <>
-        <div style={fullHexStyle}
-             onClick={(e) => this.props.onClick(e, this.props.pos)}
-             onWheel={(e) => this.props.onWheel(e, this.props.pos)}></div>
-        <div style={overlayStyle}
-             onClick={(e) => this.props.onClick(e, this.props.pos)}
-             onWheel={(e) => this.props.onWheel(e, this.props.pos)}></div>
+        <div style={fullHexStyle} ref={this.tokenNode}
+             onClick={(e) => this.props.onClick(e, this.props.pos)}>
+        </div>
+        <div style={overlayStyle} ref={this.overlayNode}
+             onClick={(e) => this.props.onClick(e, this.props.pos)}>
+        </div>
       </>
     );
   }
@@ -513,6 +533,8 @@ export class HexBoard extends React.Component {
   onWheel = (e, pos) => {
     if (this.state.activeHex !== pos)
       return;
+
+    e.preventDefault();
 
     this.wheelPos += e.deltaY;
     const steps = Math.floor(this.wheelPos / 128);
