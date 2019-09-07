@@ -14,17 +14,15 @@
       ],
       "modifiers": [
         {
-          "type": "strengthr",
+          "type": "riffle",
           "angle": -1,
-          "value": 1,
-          "self": true
+          "value": 1
         }
       ]
     },
     {
       "id": "blocker",
       "count": 2,
-      "initiative": 0,
       "health": 3,
       "shields": [
         0
@@ -144,7 +142,7 @@
       "attacks": [
         {
           "type": "melee",
-          "damage": 0,
+          "damage": 1,
           "angle": -1
         }
       ],
@@ -185,33 +183,31 @@
     {
       "id": "net_fighter",
       "count": 1,
-      "initiative": 0,
       "health": 1,
       "modifiers": [
         {
-          "type": "net"
+          "type": "net",
+          "hostile": true
         },
         {
           "type": "net",
-          "angle": 5
+          "angle": 5,
+          "hostile": true
         }
       ]
     },
     {
       "id": "stormtrooper",
       "count": 1,
-      "initiative": 2,
+      "initiative": [
+        1,
+        2
+      ],
       "health": 2,
       "attacks": [
         {
           "type": "riffle",
           "damage": 1
-        }
-      ],
-      "modifiers": [
-        {
-          "type": "second",
-          "initiative": 1
         }
       ]
     },
@@ -235,33 +231,32 @@
       "id": "the_brain",
       "count": 1,
       "health": 1,
-      "module": true,
       "modifiers": [
         {
-          "type": "strengthm",
+          "type": "melee",
           "value": 1
         },
         {
-          "type": "strenghtm",
+          "type": "melee",
           "value": 1,
           "angle": 2
         },
         {
-          "type": "strenghtm",
+          "type": "melee",
           "value": 1,
           "angle": 4
         },
         {
-          "type": "strenghtr",
+          "type": "riffle",
           "value": 1
         },
         {
-          "type": "strenghtr",
+          "type": "riffle",
           "value": 1,
           "angle": 2
         },
         {
-          "type": "strenghtr",
+          "type": "riffle",
           "value": 1,
           "angle": 4
         }
@@ -271,7 +266,6 @@
       "id": "scout",
       "count": 1,
       "health": 1,
-      "module": true,
       "modifiers": [
         {
           "type": "initiative",
@@ -293,7 +287,6 @@
       "id": "medic",
       "count": 2,
       "health": 1,
-      "module": true,
       "modifiers": [
         {
           "type": "medic",
@@ -315,20 +308,19 @@
       "id": "officer",
       "count": 1,
       "health": 1,
-      "module": true,
       "modifiers": [
         {
-          "type": "strenghtr",
+          "type": "riffle",
           "value": 1,
           "angle": 1
         },
         {
-          "type": "strenghtr",
+          "type": "riffle",
           "value": 1,
           "angle": 3
         },
         {
-          "type": "strenghtr",
+          "type": "riffle",
           "value": 1,
           "angle": 5
         }
@@ -338,10 +330,9 @@
       "id": "mother_module",
       "count": 1,
       "health": 1,
-      "module": true,
       "modifiers": [
         {
-          "type": "second",
+          "type": "mother",
           "value": 1
         }
       ]
@@ -349,22 +340,42 @@
     {
       "id": "battle",
       "count": 4,
-      "instant": true
+      "instant": true,
+      "abilities": [
+        {
+          "type": "battle"
+        }
+      ]
     },
     {
       "id": "move",
       "count": 1,
-      "instant": true
+      "instant": true,
+      "abilities": [
+        {
+          "type": "mobility"
+        }
+      ]
     },
     {
       "id": "push_back",
       "count": 5,
-      "instant": true
+      "instant": true,
+      "abilities": [
+        {
+          "type": "pushback"
+        }
+      ]
     },
     {
       "id": "air_strike",
       "count": 1,
-      "instant": true
+      "instant": true,
+      "abilities": [
+        {
+          "type": "airstrike"
+        }
+      ]
     }
   ]
 }

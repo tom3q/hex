@@ -16,8 +16,7 @@
         {
           "type": "initiative",
           "angle": -1,
-          "value": 1,
-          "self": true
+          "value": 1
         }
       ]
     },
@@ -126,19 +125,18 @@
       "id": "super_officer",
       "count": 1,
       "health": 2,
-      "module": true,
       "modifiers": [
         {
-          "type": "strengthm",
+          "type": "melee",
           "value": 1
         },
         {
-          "type": "strengthm",
+          "type": "melee",
           "angle": 1,
           "value": 1
         },
         {
-          "type": "strengthm",
+          "type": "melee",
           "angle": 5,
           "value": 1
         }
@@ -147,12 +145,10 @@
     {
       "id": "medic",
       "count": 1,
-      "module": true,
       "modifiers": [
         {
           "type": "medic",
-          "value": 1,
-          "self": true
+          "value": 1
         },
         {
           "type": "medic",
@@ -169,19 +165,18 @@
     {
       "id": "officer",
       "count": 2,
-      "module": true,
       "modifiers": [
         {
-          "type": "strenghtm",
+          "type": "melee",
           "value": 1
         },
         {
-          "type": "strenghtm",
+          "type": "melee",
           "angle": 1,
           "value": 1
         },
         {
-          "type": "strenghtm",
+          "type": "melee",
           "angle": 5,
           "value": 1
         }
@@ -190,19 +185,18 @@
     {
       "id": "scout",
       "count": 2,
-      "module": true,
       "modifiers": [
         {
-          "type": "inititive",
+          "type": "initiative",
           "value": 1
         },
         {
-          "type": "inititive",
+          "type": "initiative",
           "angle": 1,
           "value": 1
         },
         {
-          "type": "inititive",
+          "type": "initiative",
           "angle": 5,
           "value": 1
         }
@@ -211,17 +205,32 @@
     {
       "id": "battle",
       "count": 6,
-      "instant": true
+      "instant": true,
+      "abilities": [
+        {
+          "type": "battle"
+        }
+      ]
     },
     {
       "id": "move",
       "count": 4,
-      "instant": true
+      "instant": true,
+      "abilities": [
+        {
+          "type": "mobility"
+        }
+      ]
     },
     {
       "id": "grenade",
       "count": 1,
-      "instant": true
+      "instant": true,
+      "abilities": [
+        {
+          "type": "grenade"
+        }
+      ]
     }
   ]
 }
