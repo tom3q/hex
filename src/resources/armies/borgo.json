@@ -20,7 +20,8 @@
           "self": true
         }
       ]
-    }, {
+    },
+    {
       "id": "assassin",
       "count": 2,
       "initiative": 3,
@@ -30,11 +31,12 @@
         }
       ],
       "abilities": [
-       {
-	  "type": "mobility"
-       }
+        {
+          "type": "mobility"
+        }
       ]
-    }, {
+    },
+    {
       "id": "brawler",
       "initiative": 2,
       "health": 2,
@@ -42,18 +44,23 @@
         {
           "type": "melee",
           "damage": 2
-        }, {
+        },
+        {
           "type": "melee",
           "angle": 5
-        }, {
+        },
+        {
           "type": "melee",
           "angle": 1
         }
       ],
       "shields": [
-        0, 1, 5
+        0,
+        1,
+        5
       ]
-    }, {
+    },
+    {
       "id": "net_fighter",
       "count": 2,
       "initiative": 1,
@@ -68,7 +75,8 @@
           "type": "net"
         }
       ]
-    }, {
+    },
+    {
       "id": "mutant",
       "initiative": 2,
       "health": 2,
@@ -76,15 +84,18 @@
       "attacks": [
         {
           "type": "melee"
-        }, {
+        },
+        {
           "type": "melee",
           "angle": 5
-        }, {
+        },
+        {
           "type": "melee",
           "angle": 1
         }
       ]
-    }, {
+    },
+    {
       "id": "butcher",
       "initiative": 2,
       "health": 2,
@@ -93,12 +104,14 @@
         {
           "type": "melee",
           "damage": 2
-        }, {
+        },
+        {
           "type": "melee",
           "angle": 5
         }
       ]
-    }, {    
+    },
+    {
       "id": "super_mutant",
       "initiative": 2,
       "count": 1,
@@ -108,89 +121,104 @@
           "damage": 2
         }
       ]
-    }, {
+    },
+    {
       "id": "super_officer",
       "count": 1,
       "health": 2,
       "module": true,
       "modifiers": [
-	{
-	  "type": "strengthm",
-	  "value": 1
-	}, {
-	  "type": "strengthm",
-	  "angle": 1,
-	  "value": 1
-	}, {
-	  "type": "strengthm",
-	  "angle": 5,
-	  "value": 1
-	}
-     ]
-    }, {
+        {
+          "type": "strengthm",
+          "value": 1
+        },
+        {
+          "type": "strengthm",
+          "angle": 1,
+          "value": 1
+        },
+        {
+          "type": "strengthm",
+          "angle": 5,
+          "value": 1
+        }
+      ]
+    },
+    {
       "id": "medic",
       "count": 1,
       "module": true,
       "modifiers": [
-	{
-	  "type": "medic",
-	  "value": 1,
-	  "self": true
-	}, {
-	  "type": "medic",
-	  "angle": 1,
-	  "value": 1
-	}, {
-	  "type": "medic",
-	  "angle": 5,
-	  "value": 1
-	}
-     ]
-    }, {
+        {
+          "type": "medic",
+          "value": 1,
+          "self": true
+        },
+        {
+          "type": "medic",
+          "angle": 1,
+          "value": 1
+        },
+        {
+          "type": "medic",
+          "angle": 5,
+          "value": 1
+        }
+      ]
+    },
+    {
       "id": "officer",
       "count": 2,
       "module": true,
       "modifiers": [
-	{
-	  "type": "strenghtm",
-	  "value": 1
-	}, {
-	  "type": "strenghtm",
-	  "angle": 1,
-	  "value": 1
-	}, {
-	  "type": "strenghtm",
-	  "angle": 5,
-	  "value": 1
-	}
-     ]
-    }, {
+        {
+          "type": "strenghtm",
+          "value": 1
+        },
+        {
+          "type": "strenghtm",
+          "angle": 1,
+          "value": 1
+        },
+        {
+          "type": "strenghtm",
+          "angle": 5,
+          "value": 1
+        }
+      ]
+    },
+    {
       "id": "scout",
       "count": 2,
       "module": true,
       "modifiers": [
-	{
-	  "type": "inititive",
-	  "value": 1
-	}, {
-	  "type": "inititive",
-	  "angle": 1,
-	  "value": 1
-	}, {
-	  "type": "inititive",
-	  "angle": 5,
-	  "value": 1
-	}
-     ]
-    }, {
+        {
+          "type": "inititive",
+          "value": 1
+        },
+        {
+          "type": "inititive",
+          "angle": 1,
+          "value": 1
+        },
+        {
+          "type": "inititive",
+          "angle": 5,
+          "value": 1
+        }
+      ]
+    },
+    {
       "id": "battle",
       "count": 6,
       "instant": true
-    }, {
+    },
+    {
       "id": "move",
       "count": 4,
       "instant": true
-    }, {
+    },
+    {
       "id": "grenade",
       "count": 1,
       "instant": true
