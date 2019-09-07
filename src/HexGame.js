@@ -97,6 +97,14 @@ export const HexGame = Game({
 
       hex.rotation = (hex.rotation + rotation) % 6;
     },
+
+    discardCache(G, ctx) {
+      const player = Number(ctx.currentPlayer);
+      for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
+        const pos = HexUtils.PlayerCachePos(player, i);
+        G.cells[pos] = null;
+      }
+    }
   },
 
   flow: {
@@ -106,6 +114,7 @@ export const HexGame = Game({
     phases: {
       hqSetup: {
         next: "normal",
+        allowedMoves: ['moveToken', 'rotateToken'],
 
         onTurnBegin: (G, ctx) => {
           const player = ctx.currentPlayer;

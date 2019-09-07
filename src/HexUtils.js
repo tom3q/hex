@@ -44,3 +44,7 @@ export function CachePosToPlayer(pos) {
 export function PosIsCache(pos) {
   return pos < CACHE_SIZE * MAX_PLAYERS;
 }
+
+export function PlayerCachePos(player, pos) {
+  return player * CACHE_SIZE + pos;
+}
