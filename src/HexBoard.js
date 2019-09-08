@@ -690,7 +690,7 @@ export class HexBoard extends React.Component {
             <div style={bottomSpacerStyle}></div>
             {caches[0]}
             <div style={bottomSpacerStyle}></div>
-            <Button width='100px' height='80px' rotation='180'
+            <Button width='100px' height='80px' rotation={180}
                     disabled={!playerActive}
                     image='hand_view_button_cancel_x4.png'
                     imageDown='hand_view_button_cancel_pressed_x4.png'
