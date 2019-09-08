@@ -30,7 +30,6 @@ class Deck {
     let token;
     for (token of armyInfo.tokens) {
       for (let i = 0; i < (token.count || 1); ++i) {
-        token.player = ctx.currentPlayer;
         if (token.hq) {
           if (this.hqTokens.length < HexUtils.CACHE_SIZE) {
             this.hqTokens.push(token);
@@ -106,6 +105,23 @@ class Hex {
 }
 
 /**
+ * Represents a player in the game.
+ */
+class Player {
+  /**
+   * Construct a player object.
+   */
+  constructor() {
+    /** {Object} Deck of the player. */
+    this.deck = null;
+    /** {number} How many tokens the player used in current turn. */
+    this.tokensUsedInTurn = 0;
+    /** {boolean} Whether the player ended their turn. */
+    this.turnEnded = false;
+  }
+}
+
+/**
  * boardgame.io Game object implementing all of the game logic.
  */
 export const HexGame = Game({
@@ -113,7 +129,7 @@ export const HexGame = Game({
       /** Game cells array for holding the tokens. */
       cells: Array(HexUtils.CELLS_SIZE).fill(null),
       /** All players participating in the game. */
-      players: Array(ctx.numPlayers).fill({}),
+      players: Array.from({ length: ctx.numPlayers }, () => new Player())
   }),
 
   moves: {
@@ -126,7 +142,7 @@ export const HexGame = Game({
      *      - the player did not discard at least one of the tokens.
      */
     endTurn(G, ctx) {
-      const player = ctx.currentPlayer;
+      const player = Number(ctx.currentPlayer);
 
       let numTokensInCache = 0;
       for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
@@ -141,11 +157,12 @@ export const HexGame = Game({
           return INVALID_MOVE;
       }
 
-      const tokensUsed = G.players[player].tokensUsedInTurn + numTokensInCache;
+      const playerState = G.players[player];
+      const tokensUsed = playerState.tokensUsedInTurn + numTokensInCache;
       if (tokensUsed >= HexUtils.CACHE_SIZE)
         return INVALID_MOVE;
 
-      G.players[player].turnEnded = true;
+      playerState.turnEnded = true;
     },
 
     /**
@@ -162,15 +179,16 @@ export const HexGame = Game({
      *      - the to position is a cache of another player.
      */
     moveToken(G, ctx, from, to) {
+      const player = Number(ctx.currentPlayer);
       if (HexUtils.PosIsCache(to) &&
-          HexUtils.CachePosToPlayer(to) !== Number(ctx.currentPlayer))
+          HexUtils.CachePosToPlayer(to) !== player)
         return INVALID_MOVE;
 
       if (G.cells[from] === null)
         return INVALID_MOVE;
 
       const hex = G.cells[from];
-      if (hex.player !== ctx.currentPlayer)
+      if (hex.player !== player)
         return INVALID_MOVE;
 
       if (hex.token.instant)
@@ -179,16 +197,16 @@ export const HexGame = Game({
       if (G.cells[to] !== null)
         return INVALID_MOVE;
 
-      const player = G.players[hex.player];
+      const playerState = G.players[player];
       if (!hex.hq) {
         if (HexUtils.PosIsCache(from)) {
-          if (player.tokensUsedInTurn === HexUtils.CACHE_SIZE - 1) {
+          if (playerState.tokensUsedInTurn === HexUtils.CACHE_SIZE - 1) {
             return INVALID_MOVE;
           }
-          player.tokensUsedInTurn++;
+          playerState.tokensUsedInTurn++;
         }
         if (HexUtils.PosIsCache(to)) {
-          player.tokensUsedInTurn--;
+          playerState.tokensUsedInTurn--;
         }
       }
 
@@ -208,11 +226,12 @@ export const HexGame = Game({
      *      - the position does not contain a token.
      */
     rotateToken(G, ctx, pos, rotation) {
+      const player = Number(ctx.currentPlayer);
       if (G.cells[pos] === null)
         return INVALID_MOVE;
 
       const hex = G.cells[pos];
-      if (hex.player !== ctx.currentPlayer)
+      if (hex.player !== player)
         return INVALID_MOVE;
 
       if (hex.instant)
@@ -242,10 +261,10 @@ export const HexGame = Game({
      *      - the player already used the maximum number of tokens in the turn.
      */
     useInstantToken(G, ctx, at, on) {
-      const player = G.players[ctx.currentPlayer];
-      if (player.tokensUsedInTurn === HexUtils.CACHE_SIZE - 1)
+      const playerState = G.players[ctx.currentPlayer];
+      if (playerState.tokensUsedInTurn === HexUtils.CACHE_SIZE - 1)
         return INVALID_MOVE;
-      player.tokensUsedInTurn++;
+      playerState.tokensUsedInTurn++;
       G.cells[at] = null;
       /* TODO: For testing only. Implement properly. */
       G.cells[on] = null;
@@ -281,20 +300,21 @@ export const HexGame = Game({
         ],
 
         onTurnBegin: (G, ctx) => {
-          const player = ctx.currentPlayer;
+          const player = Number(ctx.currentPlayer);
+          const playerState = G.players[player];
 
-          G.players[player].turnEnded = false;
+          playerState.turnEnded = false;
 
-          if (!G.players[player].deck) {
+          if (!playerState.deck) {
             /* TODO: Obtain the army from the lobby. */
-            G.players[player].deck = new Deck(
+            playerState.deck = new Deck(
               ctx, parseInt(player) ? "borgo" : "moloch");
           }
 
-          let deck = G.players[player].deck;
+          let deck = playerState.deck;
           if (deck.allHqsDrawn()) {
             ctx.events.endPhase();
-            ctx.events.endTurn(player);
+            ctx.events.endTurn(ctx.currentPlayer);
             return;
           }
 
@@ -321,11 +341,12 @@ export const HexGame = Game({
         next: "battle",
 
         onTurnBegin: (G, ctx) => {
-          const player = ctx.currentPlayer;
-          let deck = G.players[player].deck;
+          const player = Number(ctx.currentPlayer);
+          const playerState = G.players[player];
+          let deck = playerState.deck;
 
-          G.players[player].tokensUsedInTurn = 0;
-          G.players[player].turnEnded = false;
+          playerState.tokensUsedInTurn = 0;
+          playerState.turnEnded = false;
 
           for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
             const pos = HexUtils.PlayerCachePos(player, i);

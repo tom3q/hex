@@ -588,7 +588,7 @@ export class HexBoard extends React.Component {
     const targetHex = this.props.G.cells[pos];
     if (targetHex) {
       // Clicked a TokenHex
-      if (targetHex.player === this.props.playerID) {
+      if (targetHex.player === Number(this.props.playerID)) {
         this.setState({ activeHex: pos });
       }
       return;
