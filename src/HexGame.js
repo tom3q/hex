@@ -119,8 +119,6 @@ export const HexGame = Game({
   moves: {
     /**
      * Moves a token to an empty cell.
-     * @param {!Object} G boardgame.io game state.
-     * @param {!Object} ctx boardgame.io game context.
      * @param {number} from The position of the token to move.
      * @param {number} to The position of the destination empty cell.
      * @return A new game state after the move or INVALID_MOVE if
@@ -151,8 +149,6 @@ export const HexGame = Game({
 
     /**
      * Rotates a token at pos by given number of rotation steps.
-     * @param {!Object} G boardgame.io game state.
-     * @param {!Object} ctx boardgame.io game context.
      * @param {number} pos The position of the token to rotate.
      * @param {number} rotation The number of rotation steps, with one
      *     step corresponding to 60 degrees rotation. Can be negative.
@@ -174,8 +170,6 @@ export const HexGame = Game({
 
     /**
      * Discards all the tokens in player's cache.
-     * @param {!Object} G boardgame.io game state.
-     * @param {!Object} ctx boardgame.io game context.
      * @return A new game state without any tokens in player's cache.
      */
     discardCache(G, ctx) {
