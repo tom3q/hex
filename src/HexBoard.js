@@ -698,7 +698,7 @@ export class HexBoard extends React.Component {
             <Button width='100px' height='80px' disabled={!playerActive}
                     image='hand_view_button_end_turn_x4.png'
                     imageDown='hand_view_button_end_turn_pressed_x4.png'
-                    onClick={(e) => this.props.events.endTurn()}/>
+                    onClick={(e) => this.props.moves.endTurn()}/>
         </div>
       </div>
     );

@@ -118,6 +118,37 @@ export const HexGame = Game({
 
   moves: {
     /**
+     * Verifies end turn conditions and marks the turn as ended if all of them
+     * are met.
+     * @return A new game state with player's turn ended or INVALID_MOVE if
+     *
+     *      - there are any headquarter tokens in the cache (HQ setup phase), or
+     *      - the player did not discard at least one of the tokens.
+     */
+    endTurn(G, ctx) {
+      const player = ctx.currentPlayer;
+
+      let numTokensInCache = 0;
+      for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
+        const pos = HexUtils.PlayerCachePos(player, i);
+        let hex = G.cells[pos];
+        if (!hex)
+          continue;
+
+        ++numTokensInCache;
+
+        if (hex.token.hq)
+          return INVALID_MOVE;
+      }
+
+      const tokensUsed = G.players[player].tokensUsedInTurn + numTokensInCache;
+      if (tokensUsed >= HexUtils.CACHE_SIZE)
+        return INVALID_MOVE;
+
+      G.players[player].turnEnded = true;
+    },
+
+    /**
      * Moves a token to an empty cell.
      * @param {number} from The position of the token to move.
      * @param {number} to The position of the destination empty cell.
@@ -126,6 +157,7 @@ export const HexGame = Game({
      *      - the token does not belong to the current player, or
      *      - the from position does not contain a token, or
      *      - the to position already contains a token, or
+     *      - the player already used the maximum number of tokens in the turn, or
      *      - the to position is a cache of another player.
      */
     moveToken(G, ctx, from, to) {
@@ -136,12 +168,25 @@ export const HexGame = Game({
       if (G.cells[from] === null)
         return INVALID_MOVE;
 
-      if (G.cells[to] !== null)
-        return INVALID_MOVE;
-
       const hex = G.cells[from];
       if (hex.player !== ctx.currentPlayer)
         return INVALID_MOVE;
+
+      if (G.cells[to] !== null)
+        return INVALID_MOVE;
+
+      const player = G.players[hex.player];
+      if (!hex.hq) {
+        if (HexUtils.PosIsCache(from)) {
+          if (player.tokensUsedInTurn == HexUtils.CACHE_SIZE - 1) {
+            return INVALID_MOVE;
+          }
+          player.tokensUsedInTurn++;
+        }
+        if (HexUtils.PosIsCache(to)) {
+          player.tokensUsedInTurn--;
+        }
+      }
 
       G.cells[from] = null;
       G.cells[to] = hex;
@@ -185,6 +230,11 @@ export const HexGame = Game({
     startingPhase: "hqSetup",
     endPhase: false,
 
+    endTurnIf: (G, ctx) => {
+      const player = Number(ctx.currentPlayer);
+      return G.players[player].turnEnded;
+    },
+
     phases: {
       /**
        * The headquarters setup phase.
@@ -198,10 +248,16 @@ export const HexGame = Game({
        */
       hqSetup: {
         next: "normal",
-        allowedMoves: ['moveToken', 'rotateToken'],
+        allowedMoves: [
+          'endTurn',
+          'moveToken',
+          'rotateToken',
+        ],
 
         onTurnBegin: (G, ctx) => {
           const player = ctx.currentPlayer;
+
+          G.players[player].turnEnded = false;
 
           if (!G.players[player].deck) {
             /* TODO: Obtain the army from the lobby. */
@@ -241,6 +297,9 @@ export const HexGame = Game({
         onTurnBegin: (G, ctx) => {
           const player = ctx.currentPlayer;
           let deck = G.players[player].deck;
+
+          G.players[player].tokensUsedInTurn = 0;
+          G.players[player].turnEnded = false;
 
           for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
             const pos = HexUtils.PlayerCachePos(player, i);
