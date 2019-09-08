@@ -8,9 +8,9 @@
       "initiative": 0,
       "attacks": [
         {
- 	  "type": "melee",
-	  "angle": -1
-	}
+          "type": "melee",
+          "angle": -1
+        }
       ]
     },
     {
@@ -19,28 +19,28 @@
       "count": 1,
       "health": 2,
       "attacks": [
-	{
-	  "type": "melee",
-  	  "damage": 3	  
-	},
-	{
-	  "type": "melee",
-	  "angle": 1,
-	  "damage": 2
-	},
-	{
-	  "type": "melee",
-	  "angle": 2
-	},
-	{
-	  "type": "melee",
-	  "angle": 4
-	},
-	{
-	  "type": "melee",
-	  "angle": 5,
-	  "damage": 2
-	}
+        {
+          "type": "melee",
+          "damage": 3
+        },
+        {
+          "type": "melee",
+          "angle": 1,
+          "damage": 2
+        },
+        {
+          "type": "melee",
+          "angle": 2
+        },
+        {
+          "type": "melee",
+          "angle": 4
+        },
+        {
+          "type": "melee",
+          "angle": 5,
+          "damage": 2
+        }
       ]
     },
     {
@@ -49,16 +49,16 @@
       "count": 4,
       "attacks": [
         {
-	  "type": "melee"
-	},
-	{
-	  "type": "melee",
-	  "angle": 1
-	},
-	{
-	  "type": "melee",
-	  "angle": 5
-	}
+          "type": "melee"
+        },
+        {
+          "type": "melee",
+          "angle": 1
+        },
+        {
+          "type": "melee",
+          "angle": 5
+        }
       ]
     },
     {
@@ -67,17 +67,17 @@
       "count": 2,
       "attacks": [
         {
-	  "type": "melee"
-	},
-	{
-	  "type": "melee",
-	  "angle": 5
-	}
+          "type": "melee"
+        },
+        {
+          "type": "melee",
+          "angle": 5
+        }
       ],
       "abilities": [
         {
-	  "type": "venom"
-	}
+          "type": "venom"
+        }
       ]
     },
     {
@@ -85,10 +85,10 @@
       "initiative": 1,
       "count": 3,
       "attacks": [
-	{
-	  "type": "melee",
-	  "damage": 2
-	}
+        {
+          "type": "melee",
+          "damage": 2
+        }
       ]
     },
     {
@@ -96,9 +96,9 @@
       "count": 1,
       "health": 3,
       "shields": [
-      0,
-      1,
-      5
+        0,
+        1,
+        5
       ]
     },
     {
@@ -107,9 +107,9 @@
       "health": 1,
       "modifiers": [
         {
-	  "type": "net",
-	  "hostile": true
-	}
+          "type": "net",
+          "hostile": true
+        }
       ]
     },
     {
@@ -119,9 +119,9 @@
       "attacks": [
         {
           "type": "melee",
-	  "damage": 1,
-	  "angle": -1
-	}
+          "damage": 1,
+          "angle": -1
+        }
       ]
     },
     {
@@ -130,11 +130,11 @@
       "health": 1,
       "modifiers": [
         {
-	  "type": "initiative",
-	  "value": 1,
-	  "hostile": true,
-	  "angle": -1
-	}
+          "type": "initiative",
+          "value": 1,
+          "hostile": true,
+          "angle": -1
+        }
       ]
     },
     {
@@ -143,8 +143,8 @@
       "health": 1,
       "modifiers": [
         {
-	  "type": "medic"
-	}
+          "type": "medic"
+        }
       ]
     },
     {
@@ -152,12 +152,14 @@
       "count": 1,
       "health": 1,
       "modifiers": [
-	{
-	  "type": "melee",
-	  "value": 1
-	}
+        {
+          "type": "melee",
+          "value": 1
+        }
       ],
-      "shields": [ 3 ]
+      "shields": [
+        3
+      ]
     },
     {
       "id": "symbiont_beta",
@@ -165,11 +167,13 @@
       "health": 1,
       "modifiers": [
         {
- 	  "type": "initiative",
-	  "value": 1
-	}
+          "type": "initiative",
+          "value": 1
+        }
       ],
-      "shields": [ 3 ]
+      "shields": [
+        3
+      ]
     },
     {
       "id": "symbiont_beta",
@@ -177,15 +181,17 @@
       "health": 1,
       "modifiers": [
         {
-	  "type": "melee",
-	  "value": 1
+          "type": "melee",
+          "value": 1
         },
-	{
-	  "type": "initiative",
-	  "value": 1
-	}
+        {
+          "type": "initiative",
+          "value": 1
+        }
       ],
-      "shields": [ 3 ]
+      "shields": [
+        3
+      ]
     },
     {
       "id": "roots",
@@ -197,9 +203,9 @@
       "count": 4,
       "instant": true,
       "abilities": [
-	{
- 	  "type": "battle"
-	}
+        {
+          "type": "battle"
+        }
       ]
     },
     {
@@ -210,16 +216,16 @@
         {
           "type": "castling"
         }
-     ]
+      ]
     },
     {
       "id": "move",
       "count": 1,
       "instant": true,
       "abilities": [
-	{
- 	  "type": "move"
-	}
+        {
+          "type": "move"
+        }
       ]
     },
     {
@@ -228,8 +234,8 @@
       "instant": true,
       "abilities": [
         {
-	  "type": "small_bomb"
-	}
+          "type": "small_bomb"
+        }
       ]
     }
   ]
