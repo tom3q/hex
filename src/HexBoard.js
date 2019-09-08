@@ -213,7 +213,7 @@ class TokenCache extends React.Component {
       if (hex) {
         const active = pos === this.props.activeHex;
         contents = (
-          <TokenHex pos={pos} token={hex.token}
+          <TokenHex pos={pos} token={hex.army + '_' + hex.token.id}
                     rotation={hex.rotation} active={active}
                     onClick={this.props.onClick}
                     onWheel={this.props.onWheel}/>
@@ -360,7 +360,7 @@ class PlayBoard extends React.Component {
         if (hex) {
           const active = pos === this.props.activeHex;
           contents = (
-            <TokenHex pos={pos} token={hex.token}
+            <TokenHex pos={pos} token={hex.army + '_' + hex.token.id}
                       rotation={hex.rotation} active={active}
                       onClick={this.props.onClick}
                       onWheel={this.props.onWheel}/>

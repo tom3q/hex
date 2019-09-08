@@ -84,6 +84,28 @@ class Deck {
 }
 
 /**
+ * Represents a hex token on the board.
+ */
+class Hex {
+  /**
+   * Constructs a hex object.
+   * @param {!string} player Identifier of the player.
+   * @param {!string} army Identifier of the army.
+   * @param {!Object} token Token description JSON object.
+   */
+  constructor(player, army, token) {
+    /** {!string} Identifier of the army. */
+    this.army = army;
+    /** {!string} Identifier of the player. */
+    this.player = player;
+    /** {number} Rotation of the token, in units of 60 degrees. */
+    this.rotation = 0;
+    /** {!Object} Token description JSON object. */
+    this.token = token;
+  }
+}
+
+/**
  * boardgame.io Game object implementing all of the game logic.
  */
 export const HexGame = Game({
@@ -203,11 +225,7 @@ export const HexGame = Game({
           let cachePos = player * HexUtils.CACHE_SIZE;
           let token;
           while ((token = deck.drawHq())) {
-            G.cells[cachePos++] = {
-              token: deck.army + '_' + token.id,
-              player: player,
-              rotation: 0,
-            }
+            G.cells[cachePos++] = new Hex(player, deck.army, token);
           }
         },
       },
@@ -238,11 +256,7 @@ export const HexGame = Game({
               continue;
 
             let token = deck.draw();
-            G.cells[pos] = {
-              token: deck.army + '_' + token.id,
-              player: player,
-              rotation: 0,
-            }
+            G.cells[pos] = new Hex(player, deck.army, token);
           }
         },
       },
