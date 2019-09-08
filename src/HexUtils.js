@@ -61,6 +61,20 @@ export function XyToPos(x, y) {
 }
 
 /**
+ * Translates game cells array index into hex grid coordinates.
+ * @param {number} pos Game cells array index.
+ * @return {Object} Pair of hex grid coordinates.
+ */
+export function posToXy(pos) {
+  return {
+    /** {number} X coordinate. */
+    x: (pos - CACHE_CELLS) % BOARD_WIDTH,
+    /** {number} Y coordinate. */
+    y: Math.floor((pos - CACHE_CELLS) / BOARD_WIDTH),
+  };
+}
+
+/**
  * Translates game cells array index into corresponding player ID.
  * @param {number} pos Game cells array index.
  * @return {number} Player ID.

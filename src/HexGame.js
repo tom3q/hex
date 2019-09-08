@@ -97,6 +97,10 @@ class Hex {
   constructor(player, army, token) {
     /** {!string} Identifier of the army. */
     this.army = army;
+    /** {number} Damage received by the unit. */
+    this.damage = 0;
+    /** {number} Current health level of the unit. */
+    this.health = token.health || 1;
     /** {!string} Identifier of the player. */
     this.player = player;
     /** {number} Rotation of the token, in units of 60 degrees. */
@@ -123,6 +127,56 @@ class Player {
     this.tokensUsedInTurn = 0;
     /** {boolean} Whether the player ended their turn. */
     this.turnEnded = false;
+  }
+}
+
+/**
+ * Produces handlers for instant tokens.
+ */
+class InstantHandlerFactory {
+  /**
+   * Returns handler for given instant token type.
+   * @param {!string} Instant token type identifier.
+   * @return {function(!Object, !Object, number): boolean} Handler function,
+   *     or null if the type is invalid.
+   */
+  static getHandler(type) {
+    switch(type) {
+      case 'airstrike':
+        return ((G, ctx, on) => {
+          const offsets = [
+                              { x: 0, y: -2 },
+            { x: -1, y: -1 },                  { x: 1, y: -1 },
+                              { x: 0, y:  0 },
+            { x: -1, y:  1 },                  { x: 1, y:  1 },
+                              { x: 0, y:  2 },
+          ];
+
+          let target = HexUtils.posToXy(on);
+          let offset;
+          for (offset of offsets) {
+            const x = target.x + offset.x;
+            const y = target.y + offset.y;
+            if (!HexUtils.XyIsValid(x, y)) {
+              return false;
+            }
+          }
+
+          for (offset of offsets) {
+            const x = target.x + offset.x;
+            const y = target.y + offset.y;
+            const pos = HexUtils.XyToPos(x, y);
+            const hex = G.cells[pos];
+            if (hex && !hex.token.hq && ++hex.damage >= hex.health) {
+              G.cells[pos] = null;
+            }
+          }
+          return true;
+        });
+
+      default:
+        return null;
+    }
   }
 }
 
@@ -274,10 +328,14 @@ export const HexGame = Game({
       const playerState = G.players[ctx.currentPlayer];
       if (playerState.tokensUsedInTurn === HexUtils.CACHE_SIZE - 1)
         return INVALID_MOVE;
+
+      const hex = G.cells[at];
+      const func = InstantHandlerFactory.getHandler(hex.token.abilities[0].type);
+      if (!func || !func(G, ctx, on))
+        return INVALID_MOVE;
+
       playerState.tokensUsedInTurn++;
       G.cells[at] = null;
-      /* TODO: For testing only. Implement properly. */
-      G.cells[on] = null;
     },
   },
 
