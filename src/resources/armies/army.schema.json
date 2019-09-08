@@ -154,9 +154,12 @@
                   "enum": [
                     "airstrike",
                     "battle",
+                    "castling",
                     "grenade",
                     "mobility",
-                    "pushback"
+                    "pushback",
+                    "small_bomb",
+                    "venom"
                   ]
                 }
               }
