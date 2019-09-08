@@ -6,6 +6,7 @@
 import { Game } from 'boardgame.io/core';
 import { INVALID_MOVE } from 'boardgame.io/core';
 import * as HexUtils from 'HexUtils.js';
+import { immerable } from "immer";
 
 /**
  * Represents a deck of tokens of one player.
@@ -86,6 +87,7 @@ class Deck {
  * Represents a hex token on the board.
  */
 class Hex {
+  [immerable] = true
   /**
    * Constructs a hex object.
    * @param {!string} player Identifier of the player.
@@ -108,6 +110,7 @@ class Hex {
  * Represents a player in the game.
  */
 class Player {
+  [immerable] = true
   /**
    * Construct a player object.
    */
