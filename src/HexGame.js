@@ -182,7 +182,7 @@ export const HexGame = Game({
       const player = G.players[hex.player];
       if (!hex.hq) {
         if (HexUtils.PosIsCache(from)) {
-          if (player.tokensUsedInTurn == HexUtils.CACHE_SIZE - 1) {
+          if (player.tokensUsedInTurn === HexUtils.CACHE_SIZE - 1) {
             return INVALID_MOVE;
           }
           player.tokensUsedInTurn++;
@@ -243,7 +243,7 @@ export const HexGame = Game({
      */
     useInstantToken(G, ctx, at, on) {
       const player = G.players[ctx.currentPlayer];
-      if (player.tokensUsedInTurn == HexUtils.CACHE_SIZE - 1)
+      if (player.tokensUsedInTurn === HexUtils.CACHE_SIZE - 1)
         return INVALID_MOVE;
       player.tokensUsedInTurn++;
       G.cells[at] = null;
