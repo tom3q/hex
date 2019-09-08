@@ -224,7 +224,7 @@
       "instant": true,
       "abilities": [
         {
-          "type": "move"
+          "type": "mobility"
         }
       ]
     },
