@@ -8,7 +8,7 @@
       "initiative": 0,
       "attacks": [
         {
-          "type": "riffle",
+          "type": "melee",
           "angle": -1
         }
       ],
@@ -78,7 +78,7 @@
     {
       "id": "mutant",
       "initiative": 2,
-      "health": 2,
+      "health": 1,
       "count": 6,
       "attacks": [
         {
@@ -101,8 +101,7 @@
       "count": 4,
       "attacks": [
         {
-          "type": "melee",
-          "damage": 2
+          "type": "melee"
         },
         {
           "type": "melee",

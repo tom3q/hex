@@ -76,8 +76,7 @@
       "count": 1,
       "attacks": [
         {
-          "type": "melee",
-          "damage": 1
+          "type": "melee"
         },
         {
           "type": "melee",
@@ -97,8 +96,7 @@
       "count": 2,
       "attacks": [
         {
-          "type": "melee",
-          "damage": 1
+          "type": "melee"
         },
         {
           "type": "melee",
@@ -121,8 +119,7 @@
       "count": 1,
       "attacks": [
         {
-          "type": "riffle",
-          "damage": 1
+          "type": "riffle"
         },
         {
           "type": "riffle",
@@ -142,7 +139,6 @@
       "attacks": [
         {
           "type": "melee",
-          "damage": 1,
           "angle": -1
         }
       ],
@@ -154,19 +150,19 @@
     {
       "id": "armored_guard",
       "count": 1,
-      "initiative": 0,
+      "initiative": 2,
       "health": 1,
       "attacks": [
         {
           "type": "riffle",
-          "damage": 1,
           "angle": 1
         },
         {
-          "type": "melee",
+          "type": "riffle",
           "angle": 5
         }
-      ]
+      ],
+      "shields" : [ 0 ]
     },
     {
       "id": "ripper",
@@ -206,8 +202,7 @@
       "health": 2,
       "attacks": [
         {
-          "type": "riffle",
-          "damage": 1
+          "type": "riffle"
         }
       ]
     },
@@ -218,8 +213,7 @@
       "health": 1,
       "attacks": [
         {
-          "type": "riffle",
-          "damage": 1
+          "type": "riffle"
         },
         {
           "type": "riffle",
