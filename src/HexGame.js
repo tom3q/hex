@@ -103,6 +103,8 @@ class Hex {
     this.rotation = 0;
     /** {!Object} Token description JSON object. */
     this.token = token;
+    /** {number} The turn number the token was used. */
+    this.turnUsed = null;
   }
 }
 
@@ -200,6 +202,9 @@ export const HexGame = Game({
       if (G.cells[to] !== null)
         return INVALID_MOVE;
 
+      if (hex.turnUsed !== null && hex.turnUsed !== ctx.turn)
+        return INVALID_MOVE;
+
       const playerState = G.players[player];
       if (!hex.hq) {
         if (HexUtils.PosIsCache(from)) {
@@ -207,9 +212,11 @@ export const HexGame = Game({
             return INVALID_MOVE;
           }
           playerState.tokensUsedInTurn++;
+          hex.turnUsed = ctx.turn;
         }
         if (HexUtils.PosIsCache(to)) {
           playerState.tokensUsedInTurn--;
+          hex.turnUsed = null;
         }
       }
 
