@@ -245,7 +245,7 @@ export const HexGame = Game({
         next: "battle",
 
         onTurnBegin: (G, ctx) => {
-          const player = Number(ctx.currentPlayer);
+          const player = ctx.currentPlayer;
           let deck = G.players[player].deck;
 
           for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
