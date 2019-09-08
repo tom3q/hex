@@ -574,7 +574,7 @@ export class HexBoard extends React.Component {
     }
 
     /* Use an intant hex if active and clicked on a board hex. */
-    const activeHex = this.state.activeHex ?
+    const activeHex = this.state.activeHex !== null ?
       this.props.G.cells[this.state.activeHex] : null;
     if (activeHex && activeHex.token.instant) {
       if (!HexUtils.PosIsCache(pos)) {
