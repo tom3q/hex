@@ -562,30 +562,42 @@ export class HexBoard extends React.Component {
     if (this.props.ctx.currentPlayer !== this.props.playerID)
       return;
 
-    // Validate this here as well to avoid deactivating the hex
+    /* Do not handle clicks on other player's caches. */
     if (HexUtils.PosIsCache(pos) &&
         HexUtils.CachePosToPlayer(pos) !== Number(this.props.playerID))
       return;
 
-    const hex = this.props.G.cells[pos];
-    if (hex) {
-      // Clicked a TokenHex
-      this.setState((state) => {
-        let state_change = {};
-        if (pos === state.activeHex)
-          state_change.activeHex = null;
-        else if (hex.player === this.props.playerID)
-          state_change.activeHex = pos;
-        return state_change;
-      });
-    } else {
-      // Clicked an EmptyHex
-      if (this.state.activeHex !== null) {
-        this.props.moves.moveToken(this.state.activeHex, pos);
-        this.setState({
-          activeHex: null
-        });
+    /* Clicking the active token deactivates it. */
+    if (pos === this.state.activeHex) {
+      this.setState({ activeHex: null });
+      return;
+    }
+
+    /* Use an intant hex if active and clicked on a board hex. */
+    const activeHex = this.state.activeHex ?
+      this.props.G.cells[this.state.activeHex] : null;
+    if (activeHex && activeHex.token.instant) {
+      if (!HexUtils.PosIsCache(pos)) {
+        this.props.moves.useInstantToken(this.state.activeHex, pos);
+        this.setState({ activeHex: null });
       }
+      return;
+    }
+
+    /* Change the active selection if clicked on another owned token. */
+    const targetHex = this.props.G.cells[pos];
+    if (targetHex) {
+      // Clicked a TokenHex
+      if (targetHex.player === this.props.playerID) {
+        this.setState({ activeHex: pos });
+      }
+      return;
+    }
+
+    /* Move the active token if clicked on an empty field. */
+    if (this.state.activeHex !== null) {
+      this.props.moves.moveToken(this.state.activeHex, pos);
+      this.setState({ activeHex: null });
     }
   }
 
@@ -597,6 +609,10 @@ export class HexBoard extends React.Component {
    */
   onWheel = (e, pos) => {
     if (this.state.activeHex !== pos)
+      return;
+
+    const activeHex = this.props.G.cells[pos];
+    if (activeHex.token.instant)
       return;
 
     e.preventDefault();
