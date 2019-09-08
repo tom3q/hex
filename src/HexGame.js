@@ -156,6 +156,7 @@ export const HexGame = Game({
      *
      *      - the token does not belong to the current player, or
      *      - the from position does not contain a token, or
+     *      - the token is an instant token, or
      *      - the to position already contains a token, or
      *      - the player already used the maximum number of tokens in the turn, or
      *      - the to position is a cache of another player.
@@ -170,6 +171,9 @@ export const HexGame = Game({
 
       const hex = G.cells[from];
       if (hex.player !== ctx.currentPlayer)
+        return INVALID_MOVE;
+
+      if (hex.token.instant)
         return INVALID_MOVE;
 
       if (G.cells[to] !== null)
@@ -200,6 +204,7 @@ export const HexGame = Game({
      * @return A new game state after the rotation or INVALID_MOVE if
      *
      *      - the token does not belong to the current player, or
+     *      - the token is an instant token, or
      *      - the position does not contain a token.
      */
     rotateToken(G, ctx, pos, rotation) {
@@ -208,6 +213,9 @@ export const HexGame = Game({
 
       const hex = G.cells[pos];
       if (hex.player !== ctx.currentPlayer)
+        return INVALID_MOVE;
+
+      if (hex.instant)
         return INVALID_MOVE;
 
       hex.rotation = (hex.rotation + rotation) % 6;
@@ -223,7 +231,25 @@ export const HexGame = Game({
         const pos = HexUtils.PlayerCachePos(player, i);
         G.cells[pos] = null;
       }
-    }
+    },
+
+    /**
+     * Uses an instant token.
+     * @param {number} at The position of the instant token.
+     * @param {number} on The position on which to use the token.
+     * @return A new game state after the instant token is used or INVALID_MOVE if
+     *
+     *      - the player already used the maximum number of tokens in the turn.
+     */
+    useInstantToken(G, ctx, at, on) {
+      const player = G.players[ctx.currentPlayer];
+      if (player.tokensUsedInTurn == HexUtils.CACHE_SIZE - 1)
+        return INVALID_MOVE;
+      player.tokensUsedInTurn++;
+      G.cells[at] = null;
+      /* TODO: For testing only. Implement properly. */
+      G.cells[on] = null;
+    },
   },
 
   flow: {
