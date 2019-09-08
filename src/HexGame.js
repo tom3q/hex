@@ -382,7 +382,7 @@ export const HexGame = Game({
           let deck = playerState.deck;
           if (deck.allHqsDrawn()) {
             ctx.events.endPhase();
-            ctx.events.endTurn(ctx.currentPlayer);
+            ctx.events.endTurn( { next: ctx.currentPlayer } );
             return;
           }
 
