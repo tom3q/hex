@@ -32,6 +32,8 @@ class Deck {
     for (token of armyInfo.tokens) {
       for (let i = 0; i < (token.count || 1); ++i) {
         if (token.hq) {
+          /** TODO: Take this from game settings. */
+          token.health = 20;
           if (this.hqTokens.length < HexUtils.CACHE_SIZE) {
             this.hqTokens.push(token);
           }
