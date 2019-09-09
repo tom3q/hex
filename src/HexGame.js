@@ -5,6 +5,7 @@
 
 import { Game } from 'boardgame.io/core';
 import { INVALID_MOVE } from 'boardgame.io/core';
+import { TurnOrder } from 'boardgame.io/core';
 import * as HexUtils from 'HexUtils.js';
 import { immerable } from "immer";
 
@@ -362,6 +363,7 @@ export const HexGame = Game({
        * moves to the normal phase.
        */
       hqSetup: {
+        turnOrder: TurnOrder.ONCE,
         next: "normal",
         allowedMoves: [
           'endTurn',
@@ -375,18 +377,10 @@ export const HexGame = Game({
 
           playerState.turnEnded = false;
 
-          if (!playerState.deck) {
-            /* TODO: Obtain the army from the lobby. */
-            playerState.deck = new Deck(
-              ctx, parseInt(player) ? "borgo" : "moloch");
-          }
-
-          let deck = playerState.deck;
-          if (deck.allHqsDrawn()) {
-            ctx.events.endPhase();
-            ctx.events.endTurn( { next: ctx.currentPlayer } );
-            return;
-          }
+          /* TODO: Obtain the army from the lobby. */
+          const deck = new Deck(
+            ctx, parseInt(player) ? "borgo" : "moloch");
+          playerState.deck = deck;
 
           let cachePos = player * HexUtils.CACHE_SIZE;
           let token;
