@@ -382,6 +382,7 @@ export const HexGame = Game({
 
     endTurnIf: (G, ctx) => {
       const player = Number(ctx.currentPlayer);
+      console.log('endTurnIf() = ' + G.players[player].turnEnded);
       return G.players[player].turnEnded;
     },
 
@@ -414,6 +415,7 @@ export const HexGame = Game({
         ],
 
         onTurnBegin: (G, ctx) => {
+          console.log('hqSetup.onTurnBegin()');
           const player = Number(ctx.currentPlayer);
           const playerState = G.players[player];
 
@@ -427,6 +429,14 @@ export const HexGame = Game({
           while ((token = deck.drawHq())) {
             G.cells[cachePos++] = new Hex(player, deck.army, token);
           }
+        },
+
+        onPhaseBegin: (G, ctx) => {
+          console.log('hqSetup.onPhaseBegin()');
+        },
+
+        onPhaseEnd: (G, ctx) => {
+          console.log('hqSetup.onPhaseEnd()');
         },
       },
 
@@ -446,6 +456,7 @@ export const HexGame = Game({
         turnOrder: TurnOrder.DEFAULT,
 
         onTurnBegin: (G, ctx) => {
+          console.log('normal.onTurnBegin()');
           const player = Number(ctx.currentPlayer);
           const playerState = G.players[player];
           let deck = playerState.deck;
@@ -463,12 +474,17 @@ export const HexGame = Game({
         },
 
         onPhaseBegin: (G, ctx) => {
+          console.log('normal.onPhaseBegin()');
           /*
            * TODO(https://github.com/nicolodavis/boardgame.io/issues/394))
            * Remove when the framework starts handling the first turn of the
            * next phase correctly.
            */
           ctx.events.endTurn();
+        },
+
+        onPhaseEnd: (G, ctx) => {
+          console.log('normal.onPhaseEnd()');
         },
       },
 
