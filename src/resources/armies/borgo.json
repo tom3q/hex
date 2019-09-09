@@ -96,8 +96,8 @@
     },
     {
       "id": "butcher",
-      "initiative": 2,
-      "health": 2,
+      "initiative": 3,
+      "health": 1,
       "count": 4,
       "attacks": [
         {
