@@ -710,7 +710,9 @@ export class HexBoard extends React.Component {
                     disabled={!playerActive}
                     image='hand_view_button_cancel_x4.png'
                     imageDown='hand_view_button_cancel_pressed_x4.png'
-                    onClick={(e) => this.props.moves.discardCache()}/>
+                    onClick={(e) => this.props.moves.discardCache(
+                      this.state.activeHex
+                    )}/>
             <Button width='100px' height='80px' disabled={!playerActive}
                     image='hand_view_button_end_turn_x4.png'
                     imageDown='hand_view_button_end_turn_pressed_x4.png'

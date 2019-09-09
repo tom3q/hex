@@ -308,15 +308,21 @@ export const HexGame = Game({
     },
 
     /**
-     * Discards all the tokens in player's cache.
-     * @return A new game state without any tokens in player's cache.
+     * Discards selected token from the player's cache.
+     * @param {number} pos Position of the token to discard.
+     * @return A new game state with the token removed from player's cache.
      */
-    discardCache(G, ctx) {
-      const player = Number(ctx.currentPlayer);
-      for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
-        const pos = HexUtils.PlayerCachePos(player, i);
-        G.cells[pos] = null;
-      }
+    discardCache(G, ctx, pos) {
+      if (pos === null)
+        return INVALID_MOVE;
+
+      if (!HexUtils.PosIsCache(pos))
+        return INVALID_MOVE;
+
+      if (HexUtils.CachePosToPlayer(pos) !== Number(ctx.currentPlayer))
+        return INVALID_MOVE;
+
+      G.cells[pos] = null;
     },
 
     /**
