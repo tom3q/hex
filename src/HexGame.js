@@ -141,6 +141,23 @@ class Player {
   }
 }
 
+/*
+ * Contains state of a battle.
+ */
+class Battle {
+  [immerable] = true
+
+  /**
+   * Constructs a battle object.
+   */
+  constructor(initiative, playerToResume) {
+    /** {number} Current initiative segment. */
+    this.initiative = initiative;
+    /** {number} The next player to give turn to after the battle. */
+    this.playerToResume = playerToResume;
+  }
+}
+
 /**
  * Validates whether the player made a valid combination of moves for the turn.
  * @param {!Object} G boardgame.io game state
@@ -186,6 +203,16 @@ class InstantHandlerFactory {
    */
   static getHandler(type) {
     switch(type) {
+      case 'battle':
+        return ((G, ctx, on) => {
+          if (!isTurnValid(G, ctx))
+            return false;
+
+          ctx.events.endPhase( { next: 'battle' } );
+          G.players[ctx.currentPlayer].turnEnded = true;
+          return true;
+        });
+
       case 'airstrike':
         return ((G, ctx, on) => {
           const offsets = [
@@ -452,7 +479,6 @@ export const HexGame = Game({
        * the battle stage.
        */
       normal: {
-        next: "battle",
         turnOrder: TurnOrder.DEFAULT,
 
         onTurnBegin: (G, ctx) => {
@@ -494,7 +520,91 @@ export const HexGame = Game({
        * TODO: Figure out and implement this.
        */
       battle: {
-        next: "normal",
+        next: 'battle',
+        allowedMoves: [],
+        turnOrder: TurnOrder.CUSTOM_FROM('battleTurns'),
+
+        onPhaseBegin: (G, ctx) => {
+          console.log('battle.onPhaseBegin()');
+
+          /*
+           * TODO(https://github.com/nicolodavis/boardgame.io/issues/394))
+           * Remove when the framework starts handling the first turn of the
+           * next phase correctly.
+           */
+          ctx.events.endTurn();
+
+          if (!G.battle) {
+            let maxInitiative = -1;
+            HexUtils.forEachHexOnBoard(G.cells, (hex, x, y) => {
+              maxInitiative = Math.max(hex.initiative, maxInitiative);
+            });
+            G.battle = new Battle(maxInitiative, ctx.currentPlayer);
+            console.log('Starting battle!');
+          }
+
+          console.log('Battle initiative ' + G.battle.initiative);
+
+          G.battle.tokens = [];
+          G.battleTurns = [];
+          if (G.battle.initiative < 0) {
+            G.battle = null;
+            G.battleTurns.push(0);
+            ctx.events.endPhase( { next: 'normal' });
+            return;
+          }
+
+          HexUtils.forEachHexOnBoard(G.cells, (hex, x, y) => {
+            if (hex.initiative.includes(G.battle.initiative)) {
+              G.battle.tokens.push( { x: x, y: y } );
+              G.battleTurns.push(hex.player);
+            }
+          });
+
+          console.log('Turns:');
+          console.log(G.battleTurns);
+          console.log('Tokens:');
+          console.log(G.battle.tokens);
+
+          if (!G.battleTurns.length) {
+            G.battleTurns.push(0);
+            ctx.events.endPhase();
+          }
+        },
+
+        onTurnBegin: (G, ctx) => {
+          console.log('battle.onTurnBegin()');
+
+          if (!G.battle || !G.battle.tokens.length) {
+            return;
+          }
+
+          const token = G.battle.tokens.shift();
+          //const pos = HexUtils.XyToPos(token.x, token.y);
+          //const hex = G.cells[pos];
+          console.log(`(${token.x}, ${token.y}) attacking`);
+
+          if (!G.battle.tokens.length) {
+            ctx.events.endPhase();
+            return;
+          }
+          ctx.events.endTurn();
+        },
+
+        onPhaseEnd: (G, ctx) => {
+          console.log('battle.onPhaseEnd()');
+
+          if (!G.battle || --G.battle.initiative < 0) {
+            return;
+          }
+
+          HexUtils.forEachHexOnBoard(G.cells, (hex, x, y) => {
+            const pos = HexUtils.XyToPos(x, y);
+            if (hex.damage >= hex.health) {
+              G.cells[pos] = null;
+            }
+          });
+        },
       },
     },
   },
