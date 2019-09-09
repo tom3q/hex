@@ -142,6 +142,39 @@ class Player {
 }
 
 /**
+ * Validates whether the player made a valid combination of moves for the turn.
+ * @param {!Object} G boardgame.io game state
+ * @param {!Object} ctx boardgame.io game metadata
+ * @return true if the the moves were valid and the turn can be ended, or false if
+ *
+ *      - there are any headquarter tokens in the cache (HQ setup phase), or
+ *      - the player did not discard at least one of the tokens.
+ */
+function isTurnValid(G, ctx) {
+  const player = Number(ctx.currentPlayer);
+
+  let numTokensInCache = 0;
+  for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
+    const pos = HexUtils.PlayerCachePos(player, i);
+    let hex = G.cells[pos];
+    if (!hex)
+      continue;
+
+    ++numTokensInCache;
+
+    if (hex.token.hq)
+      return false;
+  }
+
+  const playerState = G.players[player];
+  const tokensUsed = playerState.tokensUsedInTurn + numTokensInCache;
+  if (tokensUsed >= HexUtils.CACHE_SIZE)
+    return false;
+
+  return true;
+}
+
+/**
  * Produces handlers for instant tokens.
  */
 class InstantHandlerFactory {
@@ -196,42 +229,28 @@ class InstantHandlerFactory {
  */
 export const HexGame = Game({
   setup: (ctx) => ({
-      /** Game cells array for holding the tokens. */
-      cells: Array(HexUtils.CELLS_SIZE).fill(null),
-      /** All players participating in the game. */
-      players: Array.from({ length: ctx.numPlayers }, () => new Player())
+    /** {Object} State of the battle if in progress. */
+    battle: null,
+    /** {Array<number>} Turn order for the battle phase. */
+    battleTurns: [],
+    /** Game cells array for holding the tokens. */
+    cells: Array(HexUtils.CELLS_SIZE).fill(null),
+    /** All players participating in the game. */
+    players: Array.from({ length: ctx.numPlayers }, () => new Player())
   }),
 
   moves: {
     /**
      * Verifies end turn conditions and marks the turn as ended if all of them
      * are met.
-     * @return A new game state with player's turn ended or INVALID_MOVE if
-     *
-     *      - there are any headquarter tokens in the cache (HQ setup phase), or
-     *      - the player did not discard at least one of the tokens.
+     * @return A new game state with player's turn ended or INVALID_MOVE otherwise.
      */
     endTurn(G, ctx) {
-      const player = Number(ctx.currentPlayer);
-
-      let numTokensInCache = 0;
-      for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
-        const pos = HexUtils.PlayerCachePos(player, i);
-        let hex = G.cells[pos];
-        if (!hex)
-          continue;
-
-        ++numTokensInCache;
-
-        if (hex.token.hq)
-          return INVALID_MOVE;
-      }
-
-      const playerState = G.players[player];
-      const tokensUsed = playerState.tokensUsedInTurn + numTokensInCache;
-      if (tokensUsed >= HexUtils.CACHE_SIZE)
+      if (!isTurnValid(G, ctx))
         return INVALID_MOVE;
 
+      const player = Number(ctx.currentPlayer);
+      const playerState = G.players[player];
       playerState.turnEnded = true;
     },
 
