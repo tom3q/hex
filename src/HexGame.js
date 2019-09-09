@@ -345,6 +345,7 @@ export const HexGame = Game({
   flow: {
     startingPhase: "hqSetup",
     endPhase: false,
+    endTurn: false,
 
     endTurnIf: (G, ctx) => {
       const player = Number(ctx.currentPlayer);
