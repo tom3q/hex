@@ -358,6 +358,14 @@ export const HexGame = Game({
       return G.players[player].turnEnded;
     },
 
+    onTurnEnd: (G, ctx) => {
+      console.log('onTurnEnd()');
+      const player = Number(ctx.currentPlayer);
+      const playerState = G.players[player];
+      playerState.turnEnded = false;
+      playerState.tokensUsedInTurn = 0;
+    },
+
     phases: {
       /**
        * The headquarters setup phase.
@@ -371,7 +379,7 @@ export const HexGame = Game({
        */
       hqSetup: {
         turnOrder: TurnOrder.ONCE,
-        next: "normal",
+        next: 'normal',
         allowedMoves: [
           'endTurn',
           'moveToken',
@@ -381,8 +389,6 @@ export const HexGame = Game({
         onTurnBegin: (G, ctx) => {
           const player = Number(ctx.currentPlayer);
           const playerState = G.players[player];
-
-          playerState.turnEnded = false;
 
           /* TODO: Obtain the army from the lobby. */
           const deck = new Deck(
@@ -410,14 +416,12 @@ export const HexGame = Game({
        */
       normal: {
         next: "battle",
+        turnOrder: TurnOrder.DEFAULT,
 
         onTurnBegin: (G, ctx) => {
           const player = Number(ctx.currentPlayer);
           const playerState = G.players[player];
           let deck = playerState.deck;
-
-          playerState.tokensUsedInTurn = 0;
-          playerState.turnEnded = false;
 
           for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
             const pos = HexUtils.PlayerCachePos(player, i);
@@ -429,6 +433,15 @@ export const HexGame = Game({
             let token = deck.draw();
             G.cells[pos] = new Hex(player, deck.army, token);
           }
+        },
+
+        onPhaseBegin: (G, ctx) => {
+          /*
+           * TODO(https://github.com/nicolodavis/boardgame.io/issues/394))
+           * Remove when the framework starts handling the first turn of the
+           * next phase correctly.
+           */
+          ctx.events.endTurn();
         },
       },
 
