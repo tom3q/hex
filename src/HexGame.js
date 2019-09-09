@@ -104,6 +104,8 @@ class Hex {
     this.damage = 0;
     /** {number} Current health level of the unit. */
     this.health = token.health || 1;
+    /** {Array<number>} The list of unit initiatives sorted descending. */
+    this.initiative = [];
     /** {!string} Identifier of the player. */
     this.player = player;
     /** {number} Rotation of the token, in units of 60 degrees. */
@@ -112,6 +114,12 @@ class Hex {
     this.token = token;
     /** {number} The turn number the token was used. */
     this.turnUsed = null;
+
+    if (Array.isArray(token.initative)) {
+      this.initiative = [ ...token.initiative ].sort((a, b) => b - a);
+    } else {
+      this.initiative = [ token.initiative ];
+    }
   }
 }
 
