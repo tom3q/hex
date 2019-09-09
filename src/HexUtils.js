@@ -104,3 +104,25 @@ export function PosIsCache(pos) {
 export function PlayerCachePos(player, pos) {
   return player * CACHE_SIZE + pos;
 }
+
+/**
+ * @callback ForEachHexCallback
+ * @param {!Object} hex A hex object.
+ * @param {number} x The horizontal coordinate of the hex.
+ * @param {number} y The vertical coordinate of the hex.
+ */
+
+/**
+ * Executes given function on each occupied hex of the board.
+ * @param {Array<!Object>} cells The game cells array.
+ * @param {function(ForEachHexCallback} func The function to execute
+ */
+export function forEachHexOnBoard(cells, func) {
+  for (let y = 0; y < BOARD_HEIGHT; ++y) {
+    for (let x = 0; x < BOARD_WIDTH; ++x) {
+      const hex = cells[XyToPos(x, y)];
+      if (hex)
+        func(hex, x, y);
+    }
+  }
+}
