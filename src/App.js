@@ -4,6 +4,7 @@ import { HexGame } from 'HexGame.js';
 import { HexBoard } from 'HexBoard.js';
 
 const HexClient = Client({
+  debug: false,
   game: HexGame,
   board: HexBoard,
   multiplayer: { local: true },
