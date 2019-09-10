@@ -115,7 +115,7 @@ class Hex {
     /** {number} The turn number the token was used. */
     this.turnUsed = null;
 
-    if (Array.isArray(token.initative)) {
+    if (Array.isArray(token.initiative)) {
       this.initiative = [ ...token.initiative ].sort((a, b) => b - a);
     } else {
       this.initiative = [ token.initiative ];
@@ -569,7 +569,7 @@ export const HexGame = Game({
           if (!G.battle) {
             let maxInitiative = 0;
             HexUtils.forEachHexOnBoard(G.cells, (hex, x, y) => {
-              maxInitiative = Math.max(hex.initiative, maxInitiative);
+              maxInitiative = Math.max(maxInitiative, ...hex.initiative);
             });
             G.battle = new Battle(maxInitiative, ctx.currentPlayer);
             console.log('Starting battle!');
