@@ -517,6 +517,9 @@ export const HexGame = Game({
               continue;
 
             let token = deck.draw();
+            if (token === null) {
+              break;
+            }
             G.cells[pos] = new Hex(player, deck.army, token);
           }
         },
