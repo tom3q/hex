@@ -194,62 +194,78 @@ function isTurnValid(G, ctx) {
 /**
  * Produces handlers for instant tokens.
  */
-class InstantHandlerFactory {
+class InstantHandlerFactoryClass {
+  /**
+   * @private Handle airstrike instant action.
+   *
+   * Inflicts 1 damage on given hex and surrounding ones. Cannot be cast on
+   * an edge hex.
+   */
+  handleAirstike_ = (G, ctx, on) => {
+     const offsets = [
+                         { x: 0, y: -2 },
+       { x: -1, y: -1 },                  { x: 1, y: -1 },
+                         { x: 0, y:  0 },
+       { x: -1, y:  1 },                  { x: 1, y:  1 },
+                         { x: 0, y:  2 },
+     ];
+
+     let target = HexUtils.posToXy(on);
+     let offset;
+     for (offset of offsets) {
+       const x = target.x + offset.x;
+       const y = target.y + offset.y;
+       if (!HexUtils.XyIsValid(x, y)) {
+         return false;
+       }
+     }
+
+     for (offset of offsets) {
+       const x = target.x + offset.x;
+       const y = target.y + offset.y;
+       const pos = HexUtils.XyToPos(x, y);
+       const hex = G.cells[pos];
+       if (hex && !hex.token.hq && ++hex.damage >= hex.health) {
+         G.cells[pos] = null;
+       }
+     }
+     return true;
+  }
+
+  /**
+   * @private Handle battle instant action.
+   *
+   * Validates current turn and starts a battle if valid.
+   */
+  handleBattle_ = (G, ctx, on) => {
+    if (!isTurnValid(G, ctx))
+      return false;
+
+    ctx.events.endPhase( { next: 'battle' } );
+    G.players[ctx.currentPlayer].turnEnded = true;
+    return true;
+  }
+
   /**
    * Returns handler for given instant token type.
    * @param {!string} Instant token type identifier.
    * @return {function(!Object, !Object, number): boolean} Handler function,
    *     or null if the type is invalid.
    */
-  static getHandler(type) {
+  getHandler = (type) => {
     switch(type) {
-      case 'battle':
-        return ((G, ctx, on) => {
-          if (!isTurnValid(G, ctx))
-            return false;
-
-          ctx.events.endPhase( { next: 'battle' } );
-          G.players[ctx.currentPlayer].turnEnded = true;
-          return true;
-        });
-
       case 'airstrike':
-        return ((G, ctx, on) => {
-          const offsets = [
-                              { x: 0, y: -2 },
-            { x: -1, y: -1 },                  { x: 1, y: -1 },
-                              { x: 0, y:  0 },
-            { x: -1, y:  1 },                  { x: 1, y:  1 },
-                              { x: 0, y:  2 },
-          ];
+        return this.handleAirstike_;
 
-          let target = HexUtils.posToXy(on);
-          let offset;
-          for (offset of offsets) {
-            const x = target.x + offset.x;
-            const y = target.y + offset.y;
-            if (!HexUtils.XyIsValid(x, y)) {
-              return false;
-            }
-          }
-
-          for (offset of offsets) {
-            const x = target.x + offset.x;
-            const y = target.y + offset.y;
-            const pos = HexUtils.XyToPos(x, y);
-            const hex = G.cells[pos];
-            if (hex && !hex.token.hq && ++hex.damage >= hex.health) {
-              G.cells[pos] = null;
-            }
-          }
-          return true;
-        });
+      case 'battle':
+        return this.handleBattle_;
 
       default:
         return null;
     }
   }
 }
+const InstantHandlerFactory = new InstantHandlerFactoryClass();
 
 /**
  * boardgame.io Game object implementing all of the game logic.
