@@ -535,7 +535,7 @@ export const HexGame = Game({
           ctx.events.endTurn();
 
           if (!G.battle) {
-            let maxInitiative = -1;
+            let maxInitiative = 0;
             HexUtils.forEachHexOnBoard(G.cells, (hex, x, y) => {
               maxInitiative = Math.max(hex.initiative, maxInitiative);
             });
@@ -547,13 +547,6 @@ export const HexGame = Game({
 
           G.battle.tokens = [];
           G.battleTurns = [];
-          if (G.battle.initiative < 0) {
-            G.battle = null;
-            G.battleTurns.push(0);
-            ctx.events.endPhase( { next: 'normal' });
-            return;
-          }
-
           HexUtils.forEachHexOnBoard(G.cells, (hex, x, y) => {
             if (hex.initiative.includes(G.battle.initiative)) {
               G.battle.tokens.push( { x: x, y: y } );
@@ -568,7 +561,8 @@ export const HexGame = Game({
 
           if (!G.battleTurns.length) {
             G.battleTurns.push(0);
-            ctx.events.endPhase();
+            ctx.events.endPhase( { next: G.battle.initiative ?
+                                           'battle' : 'normal' } );
           }
         },
 
@@ -585,7 +579,8 @@ export const HexGame = Game({
           console.log(`(${token.x}, ${token.y}) attacking`);
 
           if (!G.battle.tokens.length) {
-            ctx.events.endPhase();
+            ctx.events.endPhase( { next: G.battle.initiative ?
+                                           'battle' : 'normal' } );
             return;
           }
           ctx.events.endTurn();
@@ -594,16 +589,16 @@ export const HexGame = Game({
         onPhaseEnd: (G, ctx) => {
           console.log('battle.onPhaseEnd()');
 
-          if (!G.battle || --G.battle.initiative < 0) {
-            return;
-          }
-
           HexUtils.forEachHexOnBoard(G.cells, (hex, x, y) => {
             const pos = HexUtils.XyToPos(x, y);
             if (hex.damage >= hex.health) {
               G.cells[pos] = null;
             }
           });
+
+          if (!G.battle.initiative--) {
+            G.battle = null;
+          }
         },
       },
     },
