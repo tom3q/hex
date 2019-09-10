@@ -523,13 +523,23 @@ export const HexGame = Game({
       /**
        * The battle stage.
        *
-       * TODO: Figure out and implement this.
+       * One phase handles one initiative segment and one turn handles attack
+       * of one unit. Once we finish initiative 0, we go back to the normal
+       * phase.
        */
       battle: {
         next: 'battle',
         allowedMoves: [],
+        endTurnIf: (G, ctx) => false,
         turnOrder: TurnOrder.CUSTOM_FROM('battleTurns'),
 
+        /**
+         * If starting a battle, find the highest initiative level on the board
+         * and initialize the Battle object that stores the battle state. Once
+         * we have the battle state, build the list of units attacking with
+         * current initiative level. The list is used to schedule players turns
+         * and execute the attacks.
+         */
         onPhaseBegin: (G, ctx) => {
           console.log('battle.onPhaseBegin()');
 
@@ -572,10 +582,18 @@ export const HexGame = Game({
           }
         },
 
+        /**
+         * Execute current attack.
+         */
         onTurnBegin: (G, ctx) => {
           console.log('battle.onTurnBegin()');
 
-          if (!G.battle || !G.battle.tokens.length) {
+          /*
+           * FIXME: We add a dummy turn for initiative phases without any
+           * turns, because otherwise the framework freaks out. Skip such
+           * a dummy turn here.
+           */
+          if (!G.battle.tokens.length) {
             return;
           }
 
@@ -592,6 +610,19 @@ export const HexGame = Game({
           ctx.events.endTurn();
         },
 
+        /**
+         * Execute the result of an interactive action.
+         */
+        onTurnEnd: (G, ctx) => {
+          console.log('battle.onTurnEnd()');
+
+          /* TODO: Things like The Clown or Sniper will be handled here. */
+        },
+
+        /**
+         * Remove dead units from the board and decrement the initaitive level.
+         * Clean up the battle state if it was the last initiative segment.
+         */
         onPhaseEnd: (G, ctx) => {
           console.log('battle.onPhaseEnd()');
 
