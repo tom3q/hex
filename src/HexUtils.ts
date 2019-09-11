@@ -21,11 +21,11 @@ export const CELLS_SIZE = CACHE_CELLS + BOARD_WIDTH * BOARD_HEIGHT;
 
 /**
  * Checks whether given board grid coordinates correspond to a hex.
- * @param {number} x The horizontal coordinate.
- * @param {number} y The vertical cordinate.
- * @return {boolean} true if given coordinates correspond to a hex.
+ * @param x The horizontal coordinate.
+ * @param y The vertical cordinate.
+ * @return true if given coordinates correspond to a hex.
  */
-export function XyIsValid(x, y) {
+export function XyIsValid(x: number, y:number): boolean {
   // 2
   // 1 3
   // 0 2 4
@@ -52,34 +52,34 @@ export function XyIsValid(x, y) {
 
 /**
  * Translates hex grid coordinates into game cells array index.
- * @param {number} x Horizontal coordinate.
- * @param {number} y Vertical coordinate.
- * @return {number} Index in the game cells array.
+ * @param x Horizontal coordinate.
+ * @param y Vertical coordinate.
+ * @return Index in the game cells array.
  */
-export function XyToPos(x, y) {
+export function XyToPos(x: number, y: number): number {
   return MAX_PLAYERS * CACHE_SIZE + y * BOARD_WIDTH + x;
 }
 
 /**
  * Translates game cells array index into hex grid coordinates.
- * @param {number} pos Game cells array index.
- * @return {Object} Pair of hex grid coordinates.
+ * @param pos Game cells array index.
+ * @return Pair of hex grid coordinates.
  */
-export function posToXy(pos) {
+export function posToXy(pos: number): object {
   return {
-    /** {number} X coordinate. */
+    /** X coordinate. */
     x: (pos - CACHE_CELLS) % BOARD_WIDTH,
-    /** {number} Y coordinate. */
+    /** Y coordinate. */
     y: Math.floor((pos - CACHE_CELLS) / BOARD_WIDTH),
   };
 }
 
 /**
  * Translates game cells array index into corresponding player ID.
- * @param {number} pos Game cells array index.
- * @return {number} Player ID.
+ * @param pos Game cells array index.
+ * @return Player ID.
  */
-export function CachePosToPlayer(pos) {
+export function CachePosToPlayer(pos: number): number {
   const player = Math.floor(pos / CACHE_SIZE);
   if (player >= MAX_PLAYERS)
     return -1;
@@ -88,36 +88,37 @@ export function CachePosToPlayer(pos) {
 
 /**
  * Checks whether given cells array index is a cache.
- * @param {number} pos Game cells array index.
- * @return {boolean} True if the index is a cache.
+ * @param pos Game cells array index.
+ * @return True if the index is a cache.
  */
-export function PosIsCache(pos) {
+export function PosIsCache(pos: number): boolean {
   return pos < CACHE_SIZE * MAX_PLAYERS;
 }
 
 /**
  * Returns a game cells array index for given player's cache index.
- * @param {number} player Player ID.
- * @param {number} pos Index in the cache.
- * @return {number} Index to the game cells array.
+ * @param player Player ID.
+ * @param pos Index in the cache.
+ * @return Index to the game cells array.
  */
-export function PlayerCachePos(player, pos) {
+export function PlayerCachePos(player: number, pos: number): number {
   return player * CACHE_SIZE + pos;
 }
 
 /**
- * @callback ForEachHexCallback
- * @param {!Object} hex A hex object.
- * @param {number} x The horizontal coordinate of the hex.
- * @param {number} y The vertical coordinate of the hex.
+ * @callback
+ * @param hex A hex object.
+ * @param x The horizontal coordinate of the hex.
+ * @param y The vertical coordinate of the hex.
  */
+type ForEachHexCallback = (hex: object, x: number, y: number) => void;
 
 /**
  * Executes given function on each occupied hex of the board.
- * @param {Array<!Object>} cells The game cells array.
- * @param {function(ForEachHexCallback} func The function to execute
+ * @param cells The game cells array.
+ * @param func The function to execute
  */
-export function forEachHexOnBoard(cells, func) {
+export function forEachHexOnBoard(cells: Array<object | null>, func: ForEachHexCallback): void {
   for (let y = 0; y < BOARD_HEIGHT; ++y) {
     for (let x = 0; x < BOARD_WIDTH; ++x) {
       const hex = cells[XyToPos(x, y)];
