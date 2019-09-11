@@ -6,7 +6,7 @@
 import { Game } from 'boardgame.io/core';
 import { INVALID_MOVE } from 'boardgame.io/core';
 import { TurnOrder } from 'boardgame.io/core';
-import * as HexUtils from 'HexUtils.js';
+import * as HexUtils from './HexUtils';
 import { immerable } from "immer";
 
 /**
@@ -28,7 +28,7 @@ class Deck {
     /** @private {!Array<Object>} Remaining playable tokens. */
     this.tokens = [];
 
-    const armyInfo = require(`resources/armies/${army}.json`);
+    const armyInfo = require(`./resources/armies/${army}.json`);
     let token;
     for (token of armyInfo.tokens) {
       for (let i = 0; i < (token.count || 1); ++i) {

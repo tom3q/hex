@@ -1,5 +1,5 @@
 import React from 'react';
-import * as HexUtils from 'HexUtils.js';
+import * as HexUtils from './HexUtils';
 import PropTypes from 'prop-types';
 
 /*
@@ -52,7 +52,7 @@ class TokenHex extends React.Component {
   }
 
   render() {
-    const hexImage=require(`resources/${this.props.token}.png`);
+    const hexImage=require(`./resources/${this.props.token}.png`);
     const fullHexStyle = {
       backgroundImage: `url(${hexImage})`,
       backgroundPosition: 'center center',
@@ -65,7 +65,7 @@ class TokenHex extends React.Component {
       width: '100%',
       zIndex: this.props.active ? 10 : 20,
     };
-    const overlayImage=require('resources/glow.png');
+    const overlayImage=require('./resources/glow.png');
     const overlayStyle = {
       backgroundImage: `url(${overlayImage})`,
       backgroundPosition: 'center center',
@@ -219,7 +219,7 @@ class TokenCache extends React.Component {
                     onWheel={this.props.onWheel}/>
           );
       } else {
-        const background=require('resources/disabled_background.png');
+        const background=require('./resources/disabled_background.png');
         contents = <EmptyHex pos={pos}
                              backgroundImage={background}
                              onClick={this.props.onClick}/>;
@@ -476,9 +476,9 @@ class Button extends React.Component {
   render() {
     let image;
     if (!this.props.disabled && this.state.down) {
-      image = require(`resources/${this.props.imageDown}`);
+      image = require(`./resources/${this.props.imageDown}`);
     } else {
-      image = require(`resources/${this.props.image}`);
+      image = require(`./resources/${this.props.image}`);
     }
     let filter = null;
     if (this.props.disabled) {
@@ -626,7 +626,7 @@ export class HexBoard extends React.Component {
   };
 
   render() {
-    const boardBackground=require('resources/board.jpg');
+    const boardBackground=require('./resources/board.jpg');
     const boardStyle = {
       backgroundImage: `url(${boardBackground})`,
       backgroundPosition: '0px 50px',

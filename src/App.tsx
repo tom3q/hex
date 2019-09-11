@@ -1,7 +1,7 @@
 import { Client } from 'boardgame.io/react';
 import React from 'react';
-import { HexGame } from 'HexGame.js';
-import { HexBoard } from 'HexBoard.js';
+import { HexGame } from './HexGame';
+import { HexBoard } from './HexBoard';
 
 const HexClient = Client({
   debug: false,
