@@ -1,6 +1,7 @@
 {
   "$id": "https://hucpa.eu/public/schemas/hex/army.schema.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "army",
   "description": "An army for the Hex game",
   "definitions": {
     "angle": {
@@ -14,6 +15,183 @@
       "type": "integer",
       "description": "The unit does not attack if omitted.",
       "minimum": 0
+    },
+    "token": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id"
+      ],
+      "dependencies": {
+        "attacks": [
+          "initiative"
+        ],
+        "initiative": [
+          "attacks"
+        ]
+      },
+      "if": {
+        "required": [ "instant" ],
+        "properties": { "instant": { "const": true } }
+      },
+      "then": {
+        "required": [ "abilities" ],
+        "not": {
+          "anyOf": [
+            {
+              "required": [ "hq" ]
+            },
+            {
+              "required": [ "health" ]
+            }
+          ]
+        }
+      },
+      "if": {
+        "required": [ "hq" ],
+        "properties": { "hq": { "const": true } }
+      },
+      "then": {
+        "not": {
+          "required": [ "health" ]
+        }
+      },
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "hq": {
+          "type": "boolean"
+        },
+        "instant": {
+          "type": "boolean"
+        },
+        "foundation": {
+          "type": "boolean"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "initiative": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/initiative"
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/initiative"
+              }
+            }
+          ]
+        },
+        "health": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "attacks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "riffle",
+                  "melee",
+                  "cannon"
+                ]
+              },
+              "angle": {
+                "$ref": "#/definitions/angle"
+              },
+              "damage": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 1
+              }
+            }
+          }
+        },
+        "abilities": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "airstrike",
+                  "battle",
+                  "castling",
+                  "grenade",
+                  "mobility",
+                  "pushback",
+                  "small_bomb",
+                  "venom"
+                ]
+              }
+            }
+          }
+        },
+        "modifiers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "initiative",
+                  "mobility",
+                  "mother",
+                  "medic",
+                  "melee",
+                  "net",
+                  "quatermaster",
+                  "riffle"
+                ]
+              },
+              "value": {
+                "type": "integer"
+              },
+              "hostile": {
+                "type": "boolean",
+                "default": false
+              },
+              "angle": {
+                "$ref": "#/definitions/angle"
+              }
+            }
+          }
+        },
+        "shields": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/angle"
+          }
+        }
+      }
     }
   },
   "type": "object",
@@ -34,181 +212,7 @@
       "type": "array",
       "minItems": 1,
       "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "id"
-        ],
-        "dependencies": {
-          "attacks": [
-            "initiative"
-          ],
-          "initiative": [
-            "attacks"
-          ]
-        },
-        "if": {
-          "required": [ "instant" ],
-          "properties": { "instant": { "const": true } }
-        },
-        "then": {
-          "required": [ "abilities" ],
-          "not": {
-            "anyOf": [
-              {
-                "required": [ "hq" ]
-              },
-              {
-                "required": [ "health" ]
-              }
-            ]
-          }
-        },
-        "if": {
-          "required": [ "hq" ],
-          "properties": { "hq": { "const": true } }
-        },
-        "then": {
-          "not": {
-            "required": [ "health" ]
-          }
-        },
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "hq": {
-            "type": "boolean"
-          },
-          "instant": {
-            "type": "boolean"
-          },
-          "foundation": {
-            "type": "boolean"
-          },
-          "count": {
-            "type": "integer",
-            "minimum": 1,
-            "default": 1
-          },
-          "initiative": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/initiative"
-              },
-              {
-                "type": "array",
-                "minItems": 1,
-                "items": {
-                  "$ref": "#/definitions/initiative"
-                }
-              }
-            ]
-          },
-          "health": {
-            "type": "integer",
-            "minimum": 1,
-            "default": 1
-          },
-          "attacks": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "type"
-              ],
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "riffle",
-                    "melee",
-                    "cannon"
-                  ]
-                },
-                "angle": {
-                  "$ref": "#/definitions/angle"
-                },
-                "damage": {
-                  "type": "integer",
-                  "minimum": 1,
-                  "default": 1
-                }
-              }
-            }
-          },
-          "abilities": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "type"
-              ],
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "airstrike",
-                    "battle",
-                    "castling",
-                    "grenade",
-                    "mobility",
-                    "pushback",
-                    "small_bomb",
-                    "venom"
-                  ]
-                }
-              }
-            }
-          },
-          "modifiers": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": [
-                "type"
-              ],
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "initiative",
-                    "mobility",
-                    "mother",
-                    "medic",
-                    "melee",
-                    "net",
-                    "quatermaster",
-                    "riffle"
-                  ]
-                },
-                "value": {
-                  "type": "integer"
-                },
-                "hostile": {
-                  "type": "boolean",
-                  "default": false
-                },
-                "angle": {
-                  "$ref": "#/definitions/angle"
-                }
-              }
-            }
-          },
-          "shields": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-              "$ref": "#/definitions/angle"
-            }
-          }
-        }
+        "$ref": "#/definitions/token"
       }
     }
   }
