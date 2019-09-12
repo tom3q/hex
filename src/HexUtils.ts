@@ -61,11 +61,21 @@ export function XyToPos(x: number, y: number): number {
 }
 
 /**
+ * A pair of coordinates on the hex grid coordinates.
+ */
+export interface Coordinates {
+  /** Horizontal coordinate. */
+  x: number;
+  /** Vertical coordinate. */
+  y: number;
+}
+
+/**
  * Translates game cells array index into hex grid coordinates.
  * @param pos Game cells array index.
  * @return Pair of hex grid coordinates.
  */
-export function posToXy(pos: number): object {
+export function posToXy(pos: number): Coordinates {
   return {
     /** X coordinate. */
     x: (pos - CACHE_CELLS) % BOARD_WIDTH,
@@ -111,14 +121,14 @@ export function PlayerCachePos(player: number, pos: number): number {
  * @param x The horizontal coordinate of the hex.
  * @param y The vertical coordinate of the hex.
  */
-type ForEachHexCallback = (hex: object, x: number, y: number) => void;
+type ForEachHexCallback = (hex: any, x: number, y: number) => void;
 
 /**
  * Executes given function on each occupied hex of the board.
  * @param cells The game cells array.
  * @param func The function to execute
  */
-export function forEachHexOnBoard(cells: Array<object | null>, func: ForEachHexCallback): void {
+export function forEachHexOnBoard(cells: Array<any | null>, func: ForEachHexCallback): void {
   for (let y = 0; y < BOARD_HEIGHT; ++y) {
     for (let x = 0; x < BOARD_WIDTH; ++x) {
       const hex = cells[XyToPos(x, y)];
