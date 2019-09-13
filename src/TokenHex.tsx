@@ -125,7 +125,7 @@ export class TokenHex extends React.Component<TokenHexProps, {}> {
       position: 'relative',
       transform: `rotate(${hex.rotation * 60}deg)`,
       width: '100%',
-      zIndex: this.props.active ? 10 : 20,
+      zIndex: 20,
     };
 
     const overlayImage=require('./resources/glow.png');
@@ -137,10 +137,24 @@ export class TokenHex extends React.Component<TokenHexProps, {}> {
       left: '0px',
       position: 'absolute',
       top: '0px',
-      visibility: this.props.active ? 'visible' : 'hidden',
+      visibility: 'hidden',
       width: '100%',
       zIndex: 15,
     };
+
+    if (this.props.active || hex.attackedInBattle || hex.damagedInBattle) {
+      overlayStyle.visibility = 'visible';
+      fullHexStyle.zIndex = 10;
+    }
+    if (!this.props.active) {
+      if (hex.attackedInBattle && hex.damagedInBattle) {
+        overlayStyle.filter = 'hue-rotate(-140deg)';
+      } else if (hex.damagedInBattle) {
+        overlayStyle.filter = 'hue-rotate(-190deg)';
+      } else if (hex.attackedInBattle) {
+        overlayStyle.filter = 'hue-rotate(-60deg)';
+      }
+    }
 
     /*
      * TODO: Remove the 3-case if below after we start to normalize the
