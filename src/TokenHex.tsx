@@ -142,6 +142,34 @@ export class TokenHex extends React.Component<TokenHexProps, {}> {
       zIndex: 15,
     };
 
+    let originalInitiatives: Array<number>;
+    if (Array.isArray(hex.token.initiative)) {
+      originalInitiatives = [...hex.token.initiative];
+    } else if (hex.token.initiative !== undefined) {
+      originalInitiatives = [hex.token.initiative];
+    } else {
+      originalInitiatives = [];
+    }
+    const initiativeMarks = [];
+    for (let i = 0; i < hex.initiative.length; ++i) {
+      if (hex.initiative[i] === originalInitiatives[i])
+        continue;
+
+      let left = 27 + i * 30;
+      if (hex.initiative.length > 2)
+        left = 25 + 45 * i / hex.initiative.length;
+
+      const state = hex.initiative[i] < originalInitiatives[i] ?
+        "lowered" : "raised";
+      const image = `ability_initiative_${state}_${hex.initiative[i]}.png`;
+
+      initiativeMarks.push(
+        <FloatingContainer top={7} left={left} key={i}>
+          <TokenMark width={34} height={34} image={image}/>
+        </FloatingContainer>
+      );
+    }
+
     const toughnessUsedMarks = [];
     for (let i = 0; i < hex.damage; ++i) {
       let left = 27 + i * 30;
@@ -153,11 +181,13 @@ export class TokenHex extends React.Component<TokenHexProps, {}> {
         </FloatingContainer>
       );
     }
+
     return (
       <>
         <div style={fullHexStyle} ref={this.tokenNode}
              onClick={(e) => this.props.onClick(e, this.props.pos)}
              onWheel={(e) => this.props.onWheel(e, this.props.pos)}>
+          {initiativeMarks}
           {toughnessUsedMarks}
         </div>
         <div style={overlayStyle} ref={this.overlayNode}
