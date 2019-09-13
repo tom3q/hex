@@ -5,16 +5,12 @@ import { Hex } from './Hex';
 interface FloatingContainerProps {
   /* Bottom position in pixels. */
   bottom?: number;
-  /* Height in pixels. */
-  height?: number;
   /* Left position in pixels. */
   left?: number;
   /* Right position in pixels. */
   right?: number;
   /* Top position in pixels. */
   top?: number;
-  /* Width in pixels. */
-  width?: number;
 }
 
 /**
@@ -25,16 +21,43 @@ class FloatingContainer extends React.Component<FloatingContainerProps, {}> {
   render() {
     const floatingStyle: React.CSSProperties = {
       bottom: this.props.bottom && this.props.bottom + 'px',
-      height: this.props.height && this.props.height + 'px',
       left: this.props.left && this.props.left + 'px',
       position: 'absolute',
       right: this.props.right && this.props.right + 'px',
       top: this.props.top && this.props.top + 'px',
-      width: this.props.width && this.props.width + 'px',
     };
     return (
       <div style={floatingStyle}>
         {this.props.children}
+      </div>
+    );
+  }
+}
+
+interface TokenMarkProps {
+  /** Height in pixels. */
+  height: number;
+  /** Width in pixels. */
+  width: number;
+  /** Path to the mark image. */
+  image: string;
+}
+
+/**
+ * Helper for drawing various marks on top of the token.
+ */
+class TokenMark extends React.Component<TokenMarkProps, {}> {
+  render() {
+    const image = require(`./resources/${this.props.image}`);
+    const markStyle: React.CSSProperties = {
+      backgroundImage: `url(${image})`,
+      backgroundPosition: 'center center',
+      backgroundSize: 'contain',
+      height: this.props.height + 'px',
+      width: this.props.width + 'px',
+    };
+    return (
+      <div style={markStyle}>
       </div>
     );
   }
@@ -104,6 +127,7 @@ export class TokenHex extends React.Component<TokenHexProps, {}> {
       width: '100%',
       zIndex: this.props.active ? 10 : 20,
     };
+
     const overlayImage=require('./resources/glow.png');
     const overlayStyle: React.CSSProperties = {
       backgroundImage: `url(${overlayImage})`,
@@ -117,23 +141,15 @@ export class TokenHex extends React.Component<TokenHexProps, {}> {
       width: '100%',
       zIndex: 15,
     };
+
     const toughnessUsedMarks = [];
-    const toughnessUsedImage=require('./resources/ability_toughness_used.png');
-    const toughnessUsedStyle: React.CSSProperties = {
-      backgroundImage: `url(${toughnessUsedImage})`,
-      backgroundPosition: 'center center',
-      backgroundSize: 'contain',
-      width: '100%',
-      height: '100%',
-    };
     for (let i = 0; i < hex.damage; ++i) {
       let left = 27 + i * 30;
       if (hex.damage > 2)
         left = 25 + 45 * i / hex.damage;
       toughnessUsedMarks.push(
-        <FloatingContainer width={34} height={34} bottom={7} left={left} key={i}>
-          <div style={toughnessUsedStyle}>
-          </div>
+        <FloatingContainer bottom={7} left={left} key={i}>
+          <TokenMark width={34} height={34} image="ability_toughness_used.png"/>
         </FloatingContainer>
       );
     }
