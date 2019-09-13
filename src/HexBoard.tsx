@@ -1,5 +1,7 @@
 import React from 'react';
 import * as HexUtils from './HexUtils';
+import { Hex } from './Hex';
+import { HexGameState } from './HexGameState';
 
 /*
  * Components representing single hex.
@@ -187,7 +189,7 @@ interface TokenCacheProps {
   /** Position of the currently selected hex. */
   activeHex: number | null;
   /** Array of all board cells. */
-  cells: Array<any | null>;
+  cells: Array<Hex | null>;
   /**
    * A function to call when the hex is clicked.
    * @param Mouse click event.
@@ -322,7 +324,7 @@ interface PlayBoardProps {
   /** Position of the currently selected hex. */
   activeHex: number | null;
   /** Array of all board cells. */
-  cells: Array<any | null>;
+  cells: Array<Hex | null>;
   /**
    * A function to call when the hex is clicked.
    * @param Mouse click event.
@@ -537,7 +539,7 @@ interface HexBoardProps {
   /** The game metadata */
   ctx: any;
   /** The game state */
-  G: any;
+  G: HexGameState;
   /** Contains functions to dispatch game moves. */
   moves: any;
   /** The player ID associated with the client. */
@@ -642,7 +644,7 @@ export class HexBoard extends React.Component<HexBoardProps, HexBoardState> {
       return;
 
     const activeHex = this.props.G.cells[pos];
-    if (activeHex.token.instant)
+    if (activeHex === null || activeHex.token.instant)
       return;
 
     this.wheelPos += e.deltaY;
