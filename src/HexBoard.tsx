@@ -645,8 +645,6 @@ export class HexBoard extends React.Component<HexBoardProps, HexBoardState> {
     if (activeHex.token.instant)
       return;
 
-    e.preventDefault();
-
     this.wheelPos += e.deltaY;
     const steps = Math.floor(this.wheelPos / 128);
     this.wheelPos -= steps * 128;
