@@ -68,7 +68,7 @@ class TokenHex extends React.Component<TokenHexProps, {}> {
     const fullHexStyle: React.CSSProperties = {
       backgroundImage: `url(${hexImage})`,
       backgroundPosition: 'center center',
-      backgroundSize: '118% 118%',
+      backgroundSize: 'contain',
       clipPath: 'polygon(  0% 50%, 25%   0%, 75%   0%, ' +
                         '100% 50%, 75% 100%, 25% 100%)',
       height: '100%',
