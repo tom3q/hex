@@ -1,0 +1,223 @@
+{
+  "id": "outpost",
+  "name": "Outpost",
+  "tokens": [
+    {
+      "id": "hq",
+      "hq": true,
+      "initiative": 0,
+      "attacks": [
+        {
+          "type": "melee",
+          "angle": -1
+        }
+      ],
+      "modifiers": [
+	{
+	  "type": "mother",
+	  "value": 1
+	}
+      ]
+    },
+    {
+      "id": "runner",
+      "initiative": 2,
+      "count": 2,
+      "attacks": [
+        {
+          "type": "melee"
+	}
+      ],
+      "abilities": [
+	{
+	  "type": "mobility"
+	}
+      ]
+    },
+    {
+      "id": "hmg",
+      "initiative": [
+	2,
+	1
+      ],
+      "count": 1,
+      "attacks": [
+        {
+          "type": "riffle"
+	}
+      ]
+    },
+    {
+      "id": "commando",
+      "initiative": 3,
+      "count": 5,
+      "attacks": [
+        {
+          "type": "riffle"
+        }
+      ]
+    },
+    {
+      "id": "annihilator",
+      "initiative": 2,
+      "count": 2,
+      "attacks": [
+        {
+          "type": "riffle",
+          "damage": 2
+        }
+      ]
+    },
+    {
+      "id": "mobile_armor",
+      "initiative": [
+	3,
+	2
+      ],
+      "count": 1,
+      "health": 3,
+      "attacks": [
+	{
+	  "type": "melee",
+	  "damage": 2
+	},
+	{
+	  "type": "riffle",
+	  "angle": 5
+	}
+      ],
+      "abilities": [
+        {
+	  "type": "mobility"
+	}
+      ]
+    },
+    {
+      "id": "brawler",
+      "initiative": 3,
+      "count": 1,
+      "attacks": [
+	{
+	  "type": "melee",
+	  "damage": 3
+	}
+      ]
+    },
+    {
+      "id": "recon_center",
+      "count": 1,
+      "health": 1,
+      "modifiers": [
+	{
+	  "type": "recon"
+    	}
+      ]
+    },
+    {
+      "id": "saboteur",
+      "count": 1,
+      "health": 1,
+      "modifiers": [
+        {
+          "type": "initiative",
+          "value": 1,
+          "hostile": true,
+          "angle": -1
+        }
+      ]
+    },
+    {
+      "id": "medic",
+      "count": 2,
+      "health": 1,
+      "modifiers": [
+        {
+          "type": "medic"
+        },
+	{
+	  "type": "medic",
+	  "angle": 1
+	},
+	{
+	  "type": "medic",
+	  "angle": 5
+	}
+      ]
+    },
+    {
+      "id": "officer",
+      "count": 1,
+      "health": 1,
+      "modifiers": [
+        {
+          "type": "riffle",
+          "value": 1,
+	  "angle": -1
+        }
+      ]
+    },
+    {
+      "id": "scoper",
+      "count": 1,
+      "health": 1,
+      "modifiers": [
+        {
+          "type": "scoper",
+          "hostile": true,
+	  "angle": -1
+        }
+      ]
+    },
+    {
+      "id": "scout",
+      "count": 2,
+      "health": 1,
+      "modifiers": [
+        {
+          "type": "initiative",
+          "value": 1
+        },
+        {
+          "type": "initiative",
+          "value": 1,
+	  "angle": 2
+        },
+	{
+	  "type": "initiative",
+	  "value": 1,
+	  "angle": 2
+	}
+      ]
+    },
+    {
+      "id": "battle",
+      "count": 6,
+      "instant": true,
+      "abilities": [
+        {
+          "type": "battle"
+        }
+      ]
+    },
+    {
+      "id": "move",
+      "count": 7,
+      "instant": true,
+      "abilities": [
+        {
+          "type": "mobility"
+        }
+      ]
+    },
+    {
+      "id": "sniper",
+      "count": 1,
+      "instant": true,
+      "abilities": [
+        {
+          "type": "sniper"
+        }
+      ]
+    }
+  ]
+}
