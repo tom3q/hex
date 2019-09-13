@@ -142,6 +142,10 @@ export class TokenHex extends React.Component<TokenHexProps, {}> {
       zIndex: 15,
     };
 
+    /*
+     * TODO: Remove the 3-case if below after we start to normalize the
+     * token data parsed from JSON.
+     */
     let originalInitiatives: Array<number>;
     if (Array.isArray(hex.token.initiative)) {
       originalInitiatives = [...hex.token.initiative];
@@ -150,6 +154,11 @@ export class TokenHex extends React.Component<TokenHexProps, {}> {
     } else {
       originalInitiatives = [];
     }
+    originalInitiatives = originalInitiatives.sort((a, b) => b - a);
+    while (originalInitiatives.length < hex.initiative.length) {
+      originalInitiatives.push(-1);
+    }
+
     const initiativeMarks = [];
     for (let i = 0; i < hex.initiative.length; ++i) {
       if (hex.initiative[i] === originalInitiatives[i])
