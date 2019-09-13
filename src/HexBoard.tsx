@@ -18,6 +18,8 @@ type HexWheelEventCallback = (e: React.WheelEvent, pos: number) => void;
 interface TokenHexProps {
   /** Whether the hex is currently selected. */
   active: boolean;
+  /** Hex object to render */
+  hex: Hex;
   /**
    * A function to call when the hex is clicked.
    * @param Mouse click event.
@@ -32,10 +34,6 @@ interface TokenHexProps {
   onWheel: HexWheelEventCallback;
   /** Position of the hex in the game cells array. */
   pos: number;
-  /** Hex rotation in the unit of 60 degrees. */
-  rotation: number;
-  /** Name of the token to display. */
-  token: string;
 }
 
 /**
@@ -66,7 +64,9 @@ class TokenHex extends React.Component<TokenHexProps, {}> {
   }
 
   render() {
-    const hexImage=require(`./resources/${this.props.token}.png`);
+    const hex = this.props.hex;
+    const name = hex.army + '_' + hex.token.id;
+    const hexImage=require(`./resources/${name}.png`);
     const fullHexStyle: React.CSSProperties = {
       backgroundImage: `url(${hexImage})`,
       backgroundPosition: 'center center',
@@ -75,7 +75,7 @@ class TokenHex extends React.Component<TokenHexProps, {}> {
                         '100% 50%, 75% 100%, 25% 100%)',
       height: '100%',
       position: 'relative',
-      transform: `rotate(${this.props.rotation * 60}deg)`,
+      transform: `rotate(${hex.rotation * 60}deg)`,
       width: '100%',
       zIndex: this.props.active ? 10 : 20,
     };
@@ -232,8 +232,7 @@ class TokenCache extends React.Component<TokenCacheProps, {}> {
       if (hex) {
         const active = pos === this.props.activeHex;
         contents = (
-          <TokenHex pos={pos} token={hex.army + '_' + hex.token.id}
-                    rotation={hex.rotation} active={active}
+          <TokenHex hex={hex} pos={pos} active={active}
                     onClick={this.props.onClick}
                     onWheel={this.props.onWheel}/>
           );
@@ -380,8 +379,7 @@ class PlayBoard extends React.Component<PlayBoardProps, {}> {
         if (hex) {
           const active = pos === this.props.activeHex;
           contents = (
-            <TokenHex pos={pos} token={hex.army + '_' + hex.token.id}
-                      rotation={hex.rotation} active={active}
+            <TokenHex hex={hex} pos={pos} active={active}
                       onClick={this.props.onClick}
                       onWheel={this.props.onWheel}/>
           );
