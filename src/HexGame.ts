@@ -264,7 +264,7 @@ export const HexGame = Game({
           const playerState = G.players[player];
           let deck = playerState.deck;
           if (deck === null)
-            throw "deck === null";
+            throw new Error('deck === null');
 
           for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
             const pos = HexUtils.PlayerCachePos(player, i);
@@ -376,7 +376,7 @@ export const HexGame = Game({
 
           const token = G.battle.tokens.shift();
           if (token === undefined)
-            throw "token === undefined";
+            throw new Error('token === undefined');
           //const pos = HexUtils.XyToPos(token.x, token.y);
           //const hex = G.cells[pos];
           console.log(`(${token.x}, ${token.y}) attacking`);
