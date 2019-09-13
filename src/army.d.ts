@@ -44,21 +44,59 @@ export interface Token {
   ];
   abilities?: [
     {
-      type: "airstrike" | "battle" | "castling" | "grenade" | "mobility" | "pushback" | "small_bomb" | "venom";
+      type:
+        | "airstrike"
+        | "battle"
+        | "castling"
+        | "grenade"
+        | "mobility"
+        | "pushback"
+        | "small_bomb"
+        | "sniper"
+        | "venom";
     },
     ...({
-      type: "airstrike" | "battle" | "castling" | "grenade" | "mobility" | "pushback" | "small_bomb" | "venom";
+      type:
+        | "airstrike"
+        | "battle"
+        | "castling"
+        | "grenade"
+        | "mobility"
+        | "pushback"
+        | "small_bomb"
+        | "sniper"
+        | "venom";
     })[]
   ];
   modifiers?: [
     {
-      type: "initiative" | "mobility" | "mother" | "medic" | "melee" | "net" | "quatermaster" | "riffle";
+      type:
+        | "initiative"
+        | "mobility"
+        | "mother"
+        | "medic"
+        | "melee"
+        | "net"
+        | "quatermaster"
+        | "recon"
+        | "riffle"
+        | "sniper";
       value?: number;
       hostile?: boolean;
       angle?: Angle;
     },
     ...({
-      type: "initiative" | "mobility" | "mother" | "medic" | "melee" | "net" | "quatermaster" | "riffle";
+      type:
+        | "initiative"
+        | "mobility"
+        | "mother"
+        | "medic"
+        | "melee"
+        | "net"
+        | "quatermaster"
+        | "recon"
+        | "riffle"
+        | "sniper";
       value?: number;
       hostile?: boolean;
       angle?: Angle;
