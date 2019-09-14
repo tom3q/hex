@@ -1,5 +1,6 @@
 import * as HexUtils from './HexUtils';
-import * as army from './army.d';
+import * as Army from './army.d';
+import { Token } from './Token';
 
 /**
  * Represents a deck of tokens of one player.
@@ -10,9 +11,9 @@ export class Deck {
   /** @const Identifier of the army. */
   army: string;
   /** @private Remaining headquarter tokens. */
-  private hqTokens: Array<army.Token>;
+  private hqTokens: Array<Token>;
   /** @private Remaining playable tokens. */
-  private tokens: Array<army.Token>;
+  private tokens: Array<Token>;
 
   /**
    * Constructs a fresh deck with all cards of the army.
@@ -25,10 +26,10 @@ export class Deck {
     this.hqTokens = [];
     this.tokens = [];
 
-    const armyInfo: army.Army = require(`./resources/armies/${army}.json`);
-    let token;
-    for (token of armyInfo.tokens) {
-      for (let i = 0; i < (token.count || 1); ++i) {
+    const armyInfo: Army.Army = require(`./resources/armies/${army}.json`);
+    for (let jsonToken of armyInfo.tokens) {
+      const token = new Token(jsonToken);
+      for (let i = 0; i < (jsonToken.count || 1); ++i) {
         if (token.hq) {
           /** TODO: Take this from game settings. */
           token.health = 20;

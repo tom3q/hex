@@ -156,19 +156,7 @@ export class TokenHex extends React.Component<TokenHexProps, {}> {
       }
     }
 
-    /*
-     * TODO: Remove the 3-case if below after we start to normalize the
-     * token data parsed from JSON.
-     */
-    let originalInitiatives: Array<number>;
-    if (Array.isArray(hex.token.initiative)) {
-      originalInitiatives = [...hex.token.initiative];
-    } else if (hex.token.initiative !== undefined) {
-      originalInitiatives = [hex.token.initiative];
-    } else {
-      originalInitiatives = [];
-    }
-    originalInitiatives = originalInitiatives.sort((a, b) => b - a);
+    let originalInitiatives: Array<number> = [...hex.token.initiative];
     while (originalInitiatives.length < hex.initiative.length) {
       originalInitiatives.push(-1);
     }

@@ -1,5 +1,5 @@
 import { immerable } from 'immer';
-import * as army from './army.d';
+import { Token } from './Token';
 
 /**
  * Represents a hex token on the board.
@@ -23,8 +23,8 @@ export class Hex {
   player: number;
   /** Rotation of the token, in units of 60 degrees. */
   rotation: number;
-  /** Token description JSON object. */
-  token: army.Token;
+  /** Token description. */
+  token: Token;
   /** The turn number the token was used. */
   turnUsed: number;
 
@@ -34,22 +34,16 @@ export class Hex {
    * @param army Identifier of the army.
    * @param token Token description JSON object.
    */
-  constructor(player: number, army: string, token: army.Token) {
+  constructor(player: number, army: string, token: Token) {
     this.army = army;
     this.attackedInBattle = false;
     this.damage = 0;
     this.damagedInBattle = false;
     this.health = token.health || 1;
-    this.initiative = [];
+    this.initiative = [ ...token.initiative ];
     this.player = player;
     this.rotation = 0;
     this.token = token;
     this.turnUsed = -1;
-
-    if (Array.isArray(token.initiative)) {
-      this.initiative = [ ...token.initiative ].sort((a, b) => b - a);
-    } else if (token.initiative !== undefined) {
-      this.initiative = [ token.initiative ];
-    }
   }
 }
