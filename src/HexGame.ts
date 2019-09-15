@@ -178,6 +178,16 @@ export const HexGame = Game({
       playerState.tokensUsedInTurn++;
       G.board.remove(at);
     },
+
+    battlePreAction(G: HexGameState, ctx: any, at: number, on?: number) {
+      const player = Number(ctx.currentPlayer);
+      G.players[player].turnEnded = true;
+    },
+
+    battlePostAction(G: HexGameState, ctx: any, at: number, on?: number) {
+      const player = Number(ctx.currentPlayer);
+      G.players[player].turnEnded = true;
+    },
   },
 
   flow: {
@@ -192,7 +202,7 @@ export const HexGame = Game({
     },
 
     onTurnEnd: (G: HexGameState, ctx: any) => {
-      console.log('onTurnEnd()');
+      console.log(`onTurnEnd(${ctx.currentPlayer})`);
       const player = Number(ctx.currentPlayer);
       const playerState = G.players[player];
       playerState.turnEnded = false;
@@ -220,7 +230,7 @@ export const HexGame = Game({
         ],
 
         onTurnBegin: (G: HexGameState, ctx: any) => {
-          console.log('hqSetup.onTurnBegin()');
+          console.log(`hqSetup.onTurnBegin(${ctx.currentPlayer})`);
           const player = Number(ctx.currentPlayer);
           const playerState = G.players[player];
 
@@ -260,7 +270,7 @@ export const HexGame = Game({
         turnOrder: TurnOrder.DEFAULT,
 
         onTurnBegin: (G: HexGameState, ctx: any) => {
-          console.log('normal.onTurnBegin()');
+          console.log(`normal.onTurnBegin(${ctx.currentPlayer})`);
           const player = Number(ctx.currentPlayer);
           const playerState = G.players[player];
           let deck = playerState.deck;
@@ -299,104 +309,85 @@ export const HexGame = Game({
 
       /**
        * The battle stage.
-       *
-       * One phase handles one initiative segment and one turn handles attack
-       * of one unit. Once we finish initiative 0, we go back to the normal
-       * phase.
        */
       battle: {
-        next: 'battle',
-        allowedMoves: [],
-        endTurnIf: (G: HexGameState, ctx: any) => false,
-        turnOrder: TurnOrder.CUSTOM_FROM('battleTurns'),
+        next: 'postBattle',
+        allowedMoves: [ 'battlePreAction' ],
+        turnOrder: TurnOrder.ONCE,
 
-        /**
-         * If starting a battle, find the highest initiative level on the board
-         * and initialize the Battle object that stores the battle state. Once
-         * we have the battle state, build the list of units attacking with
-         * current initiative level. The list is used to schedule players turns
-         * and execute the attacks.
-         */
         onPhaseBegin: (G: HexGameState, ctx: any) => {
           console.log('battle.onPhaseBegin()');
+
+          if (!G.battle) {
+            console.log('Starting battle!');
+            G.battle = new Battle(ctx.currentPlayer);
+            G.battle.start(G);
+          }
+
+          if (!G.battle.prepareSegment(G)) {
+            ctx.events.endTurn( { next: G.battle.initiator } );
+            ctx.events.endPhase( { next: 'normal' } );
+            G.battle = null;
+            console.log('Battle ended!');
+            return;
+          }
+
+          console.log('Battle initiative ' + G.battle.initiative);
+
+          ctx.events.endTurn( { next: '0' } );
+        },
+
+        onTurnBegin: (G: HexGameState, ctx: any) => {
+          console.log(`battle.onTurnBegin(${ctx.currentPlayer})`);
+
+          if (!G.battle) {
+            return;
+          }
+
+          const player = Number(ctx.currentPlayer);
+          if (!G.battle.runPreActions(G, player)) {
+            ctx.events.endTurn();
+          }
+        },
+
+        onPhaseEnd: (G: HexGameState, ctx: any) => {
+          console.log('battle.onPhaseEnd()');
+
+          if (!G.battle) {
+            return;
+          }
+
+          G.battle.runSegment(G);
+        },
+      },
+
+      postBattle: {
+        next: 'battle',
+        allowedMoves: [ 'battlePostAction' ],
+        turnOrder: TurnOrder.ONCE,
+
+        onPhaseBegin: (G: HexGameState, ctx: any) => {
+          console.log('postBattle.onPhaseBegin()');
 
           /*
            * TODO(https://github.com/nicolodavis/boardgame.io/issues/394))
            * Remove when the framework starts handling the first turn of the
            * next phase correctly.
            */
-          ctx.events.endTurn();
+          ctx.events.endTurn( { next: '0' } );
+        },
+
+        onTurnBegin: (G: HexGameState, ctx: any) => {
+          console.log(`postBattle.onTurnBegin(${ctx.currentPlayer})`);
 
           if (!G.battle) {
-            let maxInitiative = 0;
-            G.board.forEachHex((hex: Hex, coords: HexUtils.Coordinates) => {
-              maxInitiative = Math.max(maxInitiative, ...hex.initiative);
-            });
-            G.battle = new Battle(maxInitiative, ctx.currentPlayer);
-            console.log('Starting battle!');
-          }
-          const battle = G.battle;
-
-          console.log('Battle initiative ' + G.battle.initiative);
-
-          battle.tokens = [];
-          G.battleTurns = [];
-          G.board.forEachHex((hex: Hex, coords: HexUtils.Coordinates) => {
-            if (hex.initiative.includes(battle.initiative)) {
-              battle.tokens.push(coords);
-              G.battleTurns.push(hex.player);
-            }
-          });
-
-          console.log('Turns:');
-          console.log(G.battleTurns);
-          console.log('Tokens:');
-          console.log(G.battle.tokens);
-
-          if (!G.battleTurns.length) {
-            G.battleTurns.push(0);
-            ctx.events.endPhase( { next: G.battle.initiative ?
-                                           'battle' : 'normal' } );
-          }
-        },
-
-        /**
-         * Execute current attack.
-         */
-        onTurnBegin: (G: HexGameState, ctx: any) => {
-          console.log('battle.onTurnBegin()');
-
-          /*
-           * FIXME: We add a dummy turn for initiative phases without any
-           * turns, because otherwise the framework freaks out. Skip such
-           * a dummy turn here.
-           */
-          if (G.battle === null || !G.battle.tokens.length) {
             return;
           }
 
-          const token = G.battle.tokens.shift();
-          if (token === undefined)
-            throw new Error('token === undefined');
-          //const pos = HexUtils.XyToPos(token.x, token.y);
-          //const hex = G.board.get(pos);
-          console.log(`(${token.x}, ${token.y}) attacking`);
-
-          if (!G.battle.tokens.length) {
-            ctx.events.endPhase( { next: G.battle.initiative ?
-                                           'battle' : 'normal' } );
-            return;
+          const player = Number(ctx.currentPlayer);
+          if (!G.battle.runPostActions(G, player)) {
+            ctx.events.endTurn();
           }
-          ctx.events.endTurn();
-        },
-
-        /**
-         * Execute the result of an interactive action.
-         */
-        onTurnEnd: (G: HexGameState, ctx: any) => {
-          console.log('battle.onTurnEnd()');
-
-          /* TODO: Things like The Clown or Sniper will be handled here. */
         },
 
         /**
@@ -404,17 +395,13 @@ export const HexGame = Game({
          * Clean up the battle state if it was the last initiative segment.
          */
         onPhaseEnd: (G: HexGameState, ctx: any) => {
-          console.log('battle.onPhaseEnd()');
+          console.log('postBattle.onPhaseEnd()');
 
-          G.board.forEachHex((hex: Hex, coords: HexUtils.Coordinates) => {
-            if (hex.damage >= hex.health) {
-              G.board.remove(coords.toPos());
-            }
-          });
-
-          if (G.battle !== null && !G.battle.initiative--) {
-            G.battle = null;
+          if (!G.battle) {
+            return;
           }
+
+          G.battle.finishSegment(G);
         },
       },
     },

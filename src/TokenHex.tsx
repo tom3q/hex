@@ -142,12 +142,15 @@ export class TokenHex extends React.Component<TokenHexProps, {}> {
       zIndex: 15,
     };
 
-    if (this.props.active || hex.attackedInBattle || hex.damagedInBattle) {
+    if (this.props.active || hex.pendingActions.length ||
+        hex.attackedInBattle || hex.damagedInBattle) {
       overlayStyle.visibility = 'visible';
       fullHexStyle.zIndex = 10;
     }
     if (!this.props.active) {
-      if (hex.attackedInBattle && hex.damagedInBattle) {
+      if (hex.pendingActions.length) {
+        overlayStyle.filter = 'hue-rotate(70deg)';
+      } else if (hex.attackedInBattle && hex.damagedInBattle) {
         overlayStyle.filter = 'hue-rotate(-140deg)';
       } else if (hex.damagedInBattle) {
         overlayStyle.filter = 'hue-rotate(-190deg)';

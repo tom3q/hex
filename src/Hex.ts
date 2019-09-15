@@ -1,5 +1,5 @@
 import { immerable } from 'immer';
-import { Token } from './Token';
+import { Token, TokenAction } from './Token';
 
 /**
  * Represents a hex token on the board.
@@ -7,6 +7,7 @@ import { Token } from './Token';
 export class Hex {
   [immerable] = true
 
+  pendingActions: Array<TokenAction>;
   /** Identifier of the army. */
   army: string;
   /** Whether the unit attacked in current battle. */
@@ -41,6 +42,7 @@ export class Hex {
     this.damagedInBattle = false;
     this.health = token.health || 1;
     this.initiative = [ ...token.initiative ];
+    this.pendingActions = [];
     this.player = player;
     this.rotation = 0;
     this.token = token;

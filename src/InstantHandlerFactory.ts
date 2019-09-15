@@ -55,7 +55,6 @@ class InstantHandlerFactoryClass {
       return false;
 
     ctx.events.endPhase( { next: 'battle' } );
-    G.players[ctx.currentPlayer].turnEnded = true;
     return true;
   }
 
