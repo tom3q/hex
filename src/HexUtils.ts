@@ -63,25 +63,48 @@ export function XyToPos(x: number, y: number): number {
 /**
  * A pair of coordinates on the hex grid coordinates.
  */
-export interface Coordinates {
+export class Coordinates {
   /** Horizontal coordinate. */
   x: number;
   /** Vertical coordinate. */
   y: number;
-}
 
-/**
- * Translates game cells array index into hex grid coordinates.
- * @param pos Game cells array index.
- * @return Pair of hex grid coordinates.
- */
-export function posToXy(pos: number): Coordinates {
-  return {
-    /** X coordinate. */
-    x: (pos - CACHE_CELLS) % BOARD_WIDTH,
-    /** Y coordinate. */
-    y: Math.floor((pos - CACHE_CELLS) / BOARD_WIDTH),
-  };
+  /**
+   * Constructs a Coordinates object.
+   * @param x The horizontal coordinate.
+   * @param y The vertical coordinate.
+   */
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
+
+  /**
+   * Translates the coordinates into game cells array index.
+   * @return Index in the game cells array.
+   */
+  toPos(): number {
+    return XyToPos(this.x, this.y);
+  }
+
+  toString(): string {
+    return `(${this.x}, ${this.y})`;
+  }
+
+  /**
+   * Translates game cells array index into hex grid coordinates.
+   * @param pos Game cells array index.
+   * @return A Coordinate object or null if the position was invalid.
+   */
+  static fromPos(pos: number): Coordinates | null {
+    if (PosIsCache(pos)) return null;
+    return new Coordinates(
+      /** X coordinate. */
+      (pos - CACHE_CELLS) % BOARD_WIDTH,
+      /** Y coordinate. */
+      Math.floor((pos - CACHE_CELLS) / BOARD_WIDTH),
+    );
+  }
 }
 
 /**
@@ -121,7 +144,7 @@ export function PlayerCachePos(player: number, pos: number): number {
  * @param x The horizontal coordinate of the hex.
  * @param y The vertical coordinate of the hex.
  */
-type ForEachHexCallback = (hex: any, x: number, y: number) => void;
+type ForEachHexCallback = (hex: any, coords: Coordinates) => void;
 
 /**
  * Executes given function on each occupied hex of the board.
@@ -131,9 +154,10 @@ type ForEachHexCallback = (hex: any, x: number, y: number) => void;
 export function forEachHexOnBoard(cells: Array<any | null>, func: ForEachHexCallback): void {
   for (let y = 0; y < BOARD_HEIGHT; ++y) {
     for (let x = 0; x < BOARD_WIDTH; ++x) {
-      const hex = cells[XyToPos(x, y)];
+      const coords = new Coordinates(x, y);
+      const hex = cells[coords.toPos()];
       if (hex)
-        func(hex, x, y);
+        func(hex, coords);
     }
   }
 }

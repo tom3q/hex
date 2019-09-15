@@ -21,7 +21,9 @@ class InstantHandlerFactoryClass {
                         { x: 0, y:  2 },
     ];
 
-    let target = HexUtils.posToXy(on);
+    let target = HexUtils.Coordinates.fromPos(on);
+    if (!target) return false;
+
     let offset;
     for (offset of offsets) {
       const x = target.x + offset.x;

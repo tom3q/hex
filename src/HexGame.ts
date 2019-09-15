@@ -328,7 +328,7 @@ export const HexGame = Game({
 
           if (!G.battle) {
             let maxInitiative = 0;
-            HexUtils.forEachHexOnBoard(G.cells, (hex: Hex, x, y) => {
+            HexUtils.forEachHexOnBoard(G.cells, (hex, coords) => {
               maxInitiative = Math.max(maxInitiative, ...hex.initiative);
             });
             G.battle = new Battle(maxInitiative, ctx.currentPlayer);
@@ -340,9 +340,9 @@ export const HexGame = Game({
 
           battle.tokens = [];
           G.battleTurns = [];
-          HexUtils.forEachHexOnBoard(G.cells, (hex, x, y) => {
+          HexUtils.forEachHexOnBoard(G.cells, (hex, coords) => {
             if (hex.initiative.includes(battle.initiative)) {
-              battle.tokens.push( { x: x, y: y } );
+              battle.tokens.push(coords);
               G.battleTurns.push(hex.player);
             }
           });
@@ -405,10 +405,9 @@ export const HexGame = Game({
         onPhaseEnd: (G: HexGameState, ctx: any) => {
           console.log('battle.onPhaseEnd()');
 
-          HexUtils.forEachHexOnBoard(G.cells, (hex, x, y) => {
-            const pos = HexUtils.XyToPos(x, y);
+          HexUtils.forEachHexOnBoard(G.cells, (hex, coords) => {
             if (hex.damage >= hex.health) {
-              G.cells[pos] = null;
+              G.cells[coords.toPos()] = null;
             }
           });
 
