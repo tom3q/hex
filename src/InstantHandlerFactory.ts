@@ -37,9 +37,9 @@ class InstantHandlerFactoryClass {
       const x = target.x + offset.x;
       const y = target.y + offset.y;
       const pos = HexUtils.XyToPos(x, y);
-      const hex = G.cells[pos];
+      const hex = G.board.get(pos);
       if (hex && !hex.token.hq && ++hex.damage >= hex.health) {
-        G.cells[pos] = null;
+        G.board.remove(pos);
       }
     }
     return true;

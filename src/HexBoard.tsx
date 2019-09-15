@@ -78,7 +78,7 @@ export class HexBoard extends React.Component<HexBoardProps, HexBoardState> {
 
     /* Use an intant hex if active and clicked on a board hex. */
     const activeHex = this.state.activeHex !== null ?
-      this.props.G.cells[this.state.activeHex] : null;
+      this.props.G.board.get(this.state.activeHex) : null;
     if (activeHex && activeHex.token.instant) {
       if (!HexUtils.PosIsCache(pos)) {
         this.props.moves.useInstantToken(this.state.activeHex, pos);
@@ -88,7 +88,7 @@ export class HexBoard extends React.Component<HexBoardProps, HexBoardState> {
     }
 
     /* Change the active selection if clicked on another owned token. */
-    const targetHex = this.props.G.cells[pos];
+    const targetHex = this.props.G.board.get(pos);
     if (targetHex) {
       // Clicked a TokenHex
       if (targetHex.player === Number(this.props.playerID)) {
@@ -113,7 +113,7 @@ export class HexBoard extends React.Component<HexBoardProps, HexBoardState> {
     if (this.state.activeHex !== pos)
       return;
 
-    const activeHex = this.props.G.cells[pos];
+    const activeHex = this.props.G.board.get(pos);
     if (activeHex === null || activeHex.token.instant)
       return;
 
@@ -169,7 +169,7 @@ export class HexBoard extends React.Component<HexBoardProps, HexBoardState> {
       caches.push(
         <TokenCache vertical={i % 2 !== 0}
                     player={player}
-                    cells={this.props.G.cells}
+                    board={this.props.G.board}
                     activeHex={this.state.activeHex}
                     onClick={this.onClick}
                     onWheel={this.onWheel}/>
@@ -188,7 +188,7 @@ export class HexBoard extends React.Component<HexBoardProps, HexBoardState> {
             {caches[1]}
           </div>
           <div style={tableContainerStyle}>
-            <PlayBoard cells={this.props.G.cells}
+            <PlayBoard board={this.props.G.board}
                        activeHex={this.state.activeHex}
                        onClick={this.onClick}
                        onWheel={this.onWheel}/>

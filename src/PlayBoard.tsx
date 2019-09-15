@@ -1,7 +1,7 @@
 import React from 'react';
 import * as HexBoardUtils from './HexBoardUtils';
 import * as HexUtils from './HexUtils';
-import { Hex } from './Hex';
+import { BoardState } from './BoardState';
 import { EmptyHex } from './EmptyHex';
 import { TokenHex } from './TokenHex';
 
@@ -70,8 +70,8 @@ class PlayBoardContainer extends React.Component<PlayBoardContainerProps, {}> {
 interface PlayBoardProps {
   /** Position of the currently selected hex. */
   activeHex: number | null;
-  /** Array of all board cells. */
-  cells: Array<Hex | null>;
+  /** Board state. */
+  board: BoardState;
   /**
    * A function to call when the hex is clicked.
    * @param Mouse click event.
@@ -122,7 +122,7 @@ export class PlayBoard extends React.Component<PlayBoardProps, {}> {
           continue;
         }
 
-        const hex = this.props.cells[pos];
+        const hex = this.props.board.get(pos);
         let contents;
         if (hex) {
           const active = pos === this.props.activeHex;

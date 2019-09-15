@@ -16,7 +16,7 @@ export function isTurnValid(G: HexGameState, ctx: any): boolean {
   let numTokensInCache = 0;
   for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
     const pos = HexUtils.PlayerCachePos(player, i);
-    let hex = G.cells[pos];
+    let hex = G.board.get(pos);
     if (!hex)
       continue;
 

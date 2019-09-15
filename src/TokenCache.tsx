@@ -1,7 +1,7 @@
 import React from 'react';
 import * as HexBoardUtils from './HexBoardUtils';
 import * as HexUtils from './HexUtils';
-import { Hex } from './Hex';
+import { BoardState } from './BoardState';
 import { EmptyHex } from './EmptyHex';
 import { TokenHex } from './TokenHex';
 
@@ -45,8 +45,8 @@ class TokenCacheContainer extends React.Component<TokenCacheContainerProps, {}> 
 interface TokenCacheProps {
   /** Position of the currently selected hex. */
   activeHex: number | null;
-  /** Array of all board cells. */
-  cells: Array<Hex | null>;
+  /** Board state. */
+  board: BoardState;
   /**
    * A function to call when the hex is clicked.
    * @param Mouse click event.
@@ -84,7 +84,7 @@ export class TokenCache extends React.Component<TokenCacheProps, {}> {
     let items = [];
     for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
       const pos = this.props.player * HexUtils.CACHE_SIZE + i;
-      const hex = this.props.cells[pos];
+      const hex = this.props.board.get(pos);
       let contents;
       if (hex) {
         const active = pos === this.props.activeHex;

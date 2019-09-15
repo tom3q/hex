@@ -9,6 +9,7 @@ import { TurnOrder } from 'boardgame.io/core';
 import * as HexGameUtils from './HexGameUtils';
 import * as HexUtils from './HexUtils';
 import { Battle } from './Battle';
+import { BoardState } from './BoardState';
 import { Deck } from './Deck';
 import { Hex } from './Hex';
 import { HexGameState } from './HexGameState';
@@ -24,8 +25,8 @@ export const HexGame = Game({
     battle: null,
     /** Turn order for the battle phase. */
     battleTurns: [],
-    /** Game cells array for holding the tokens. */
-    cells: Array(HexUtils.CELLS_SIZE).fill(null),
+    /** State of the board. */
+    board: new BoardState(),
     /** All players participating in the game. */
     players: Array.from({ length: ctx.numPlayers }, () => new Player())
   }),
@@ -64,7 +65,7 @@ export const HexGame = Game({
           HexUtils.CachePosToPlayer(to) !== player)
         return INVALID_MOVE;
 
-      const hex = G.cells[from];
+      const hex = G.board.get(from);
       if (hex === null)
         return INVALID_MOVE;
 
@@ -74,7 +75,7 @@ export const HexGame = Game({
       if (hex.token.instant)
         return INVALID_MOVE;
 
-      if (G.cells[to] !== null)
+      if (G.board.get(to) !== null)
         return INVALID_MOVE;
 
       if (hex.turnUsed !== -1 && hex.turnUsed !== ctx.turn)
@@ -95,8 +96,8 @@ export const HexGame = Game({
         }
       }
 
-      G.cells[from] = null;
-      G.cells[to] = hex;
+      G.board.remove(from);
+      G.board.put(to, hex);
     },
 
     /**
@@ -112,7 +113,7 @@ export const HexGame = Game({
      */
     rotateToken(G: HexGameState, ctx: any, pos: number, rotation: number) {
       const player = Number(ctx.currentPlayer);
-      const hex = G.cells[pos];
+      const hex = G.board.get(pos);
       if (hex === null)
         return INVALID_MOVE;
 
@@ -135,7 +136,7 @@ export const HexGame = Game({
       if (pos === null) {
         for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
           const pos = HexUtils.PlayerCachePos(player, i);
-          G.cells[pos] = null;
+          G.board.remove(pos);
         }
         return;
       }
@@ -146,7 +147,7 @@ export const HexGame = Game({
       if (HexUtils.CachePosToPlayer(pos) !== player)
         return INVALID_MOVE;
 
-      G.cells[pos] = null;
+      G.board.remove(pos);
     },
 
     /**
@@ -162,7 +163,7 @@ export const HexGame = Game({
       if (playerState.tokensUsedInTurn === HexUtils.CACHE_SIZE - 1)
         return INVALID_MOVE;
 
-      const hex = G.cells[at];
+      const hex = G.board.get(at);
       if (hex === null)
         return INVALID_MOVE;
 
@@ -175,7 +176,7 @@ export const HexGame = Game({
         return INVALID_MOVE;
 
       playerState.tokensUsedInTurn++;
-      G.cells[at] = null;
+      G.board.remove(at);
     },
   },
 
@@ -231,7 +232,7 @@ export const HexGame = Game({
           let cachePos = player * HexUtils.CACHE_SIZE;
           let token;
           while ((token = deck.drawHq())) {
-            G.cells[cachePos++] = new Hex(player, deck.army, token);
+            G.board.put(cachePos++, new Hex(player, deck.army, token));
           }
         },
 
@@ -268,7 +269,7 @@ export const HexGame = Game({
 
           for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
             const pos = HexUtils.PlayerCachePos(player, i);
-            let cell = G.cells[pos];
+            let cell = G.board.get(pos);
 
             if (cell)
               continue;
@@ -277,7 +278,7 @@ export const HexGame = Game({
             if (token === null) {
               break;
             }
-            G.cells[pos] = new Hex(player, deck.army, token);
+            G.board.put(pos, new Hex(player, deck.army, token));
           }
         },
 
@@ -328,7 +329,7 @@ export const HexGame = Game({
 
           if (!G.battle) {
             let maxInitiative = 0;
-            HexUtils.forEachHexOnBoard(G.cells, (hex, coords) => {
+            G.board.forEachHex((hex: Hex, coords: HexUtils.Coordinates) => {
               maxInitiative = Math.max(maxInitiative, ...hex.initiative);
             });
             G.battle = new Battle(maxInitiative, ctx.currentPlayer);
@@ -340,7 +341,7 @@ export const HexGame = Game({
 
           battle.tokens = [];
           G.battleTurns = [];
-          HexUtils.forEachHexOnBoard(G.cells, (hex, coords) => {
+          G.board.forEachHex((hex: Hex, coords: HexUtils.Coordinates) => {
             if (hex.initiative.includes(battle.initiative)) {
               battle.tokens.push(coords);
               G.battleTurns.push(hex.player);
@@ -378,7 +379,7 @@ export const HexGame = Game({
           if (token === undefined)
             throw new Error('token === undefined');
           //const pos = HexUtils.XyToPos(token.x, token.y);
-          //const hex = G.cells[pos];
+          //const hex = G.board.get(pos);
           console.log(`(${token.x}, ${token.y}) attacking`);
 
           if (!G.battle.tokens.length) {
@@ -405,9 +406,9 @@ export const HexGame = Game({
         onPhaseEnd: (G: HexGameState, ctx: any) => {
           console.log('battle.onPhaseEnd()');
 
-          HexUtils.forEachHexOnBoard(G.cells, (hex, coords) => {
+          G.board.forEachHex((hex: Hex, coords: HexUtils.Coordinates) => {
             if (hex.damage >= hex.health) {
-              G.cells[coords.toPos()] = null;
+              G.board.remove(coords.toPos());
             }
           });
 
