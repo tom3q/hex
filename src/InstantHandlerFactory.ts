@@ -13,34 +13,34 @@ class InstantHandlerFactoryClass {
    * an edge hex.
    */
   handleAirstike_ = (G: HexGameState, ctx: any, on: number): boolean => {
-     const offsets = [
-                         { x: 0, y: -2 },
-       { x: -1, y: -1 },                  { x: 1, y: -1 },
-                         { x: 0, y:  0 },
-       { x: -1, y:  1 },                  { x: 1, y:  1 },
-                         { x: 0, y:  2 },
-     ];
+    const offsets = [
+                        { x: 0, y: -2 },
+      { x: -1, y: -1 },                  { x: 1, y: -1 },
+                        { x: 0, y:  0 },
+      { x: -1, y:  1 },                  { x: 1, y:  1 },
+                        { x: 0, y:  2 },
+    ];
 
-     let target = HexUtils.posToXy(on);
-     let offset;
-     for (offset of offsets) {
-       const x = target.x + offset.x;
-       const y = target.y + offset.y;
-       if (!HexUtils.XyIsValid(x, y)) {
-         return false;
-       }
-     }
+    let target = HexUtils.posToXy(on);
+    let offset;
+    for (offset of offsets) {
+      const x = target.x + offset.x;
+      const y = target.y + offset.y;
+      if (!HexUtils.XyIsValid(x, y)) {
+        return false;
+      }
+    }
 
-     for (offset of offsets) {
-       const x = target.x + offset.x;
-       const y = target.y + offset.y;
-       const pos = HexUtils.XyToPos(x, y);
-       const hex = G.cells[pos];
-       if (hex && !hex.token.hq && ++hex.damage >= hex.health) {
-         G.cells[pos] = null;
-       }
-     }
-     return true;
+    for (offset of offsets) {
+      const x = target.x + offset.x;
+      const y = target.y + offset.y;
+      const pos = HexUtils.XyToPos(x, y);
+      const hex = G.cells[pos];
+      if (hex && !hex.token.hq && ++hex.damage >= hex.health) {
+        G.cells[pos] = null;
+      }
+    }
+    return true;
   }
 
   /**
