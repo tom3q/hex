@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.json",
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "compilerOptions": {
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "module": "es6",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "target": "esnext",
+    "jsx": "react"
+  }
+}

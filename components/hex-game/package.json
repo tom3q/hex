@@ -1,0 +1,18 @@
+{
+  "name": "hex-game",
+  "private": true,
+  "version": "0.1.0",
+  "dependencies": {
+    "@types/jest": "^25.1.4",
+    "@types/node": "^13.9.1",
+    "boardgame.io": "^0.39.3",
+    "hex-resources": "^0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.8.3",
+    "typescript-eslint": "^0.0.1-alpha.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

@@ -1,7 +1,7 @@
 import React from 'react';
 import * as HexBoardUtils from './HexBoardUtils';
-import * as HexUtils from './HexUtils';
-import { BoardState } from './BoardState';
+import * as HexUtils from 'hex-game/HexUtils';
+import { BoardState } from 'hex-game/BoardState';
 import { EmptyHex } from './EmptyHex';
 import { TokenHex } from './TokenHex';
 
@@ -94,7 +94,7 @@ export class TokenCache extends React.Component<TokenCacheProps, {}> {
                     onWheel={this.props.onWheel}/>
           );
       } else {
-        const background=require('./resources/disabled_background.png');
+        const background=require('hex-resources/resources/gfx/disabled_background.png');
         contents = <EmptyHex pos={pos}
                              backgroundImage={background}
                              onClick={this.props.onClick}/>;

@@ -1,7 +1,7 @@
 import React from 'react';
-import * as HexUtils from './HexUtils';
+import * as HexUtils from 'hex-game/HexUtils';
 import { Button } from './Button';
-import { HexGameState } from './HexGameState';
+import { HexGameState } from 'hex-game/HexGameState';
 import { PlayBoard } from './PlayBoard';
 import { TokenCache } from './TokenCache';
 
@@ -126,7 +126,7 @@ export class HexBoard extends React.Component<HexBoardProps, HexBoardState> {
   };
 
   render() {
-    const boardBackground=require('./resources/board.jpg');
+    const boardBackground=require('hex-resources/resources/gfx/board.jpg');
     const boardStyle: React.CSSProperties = {
       backgroundImage: `url(${boardBackground})`,
       backgroundPosition: '0px 50px',

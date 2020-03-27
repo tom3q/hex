@@ -26,7 +26,7 @@ export class Deck {
     this.hqTokens = [];
     this.tokens = [];
 
-    const armyInfo: Army.Army = require(`./resources/armies/${army}.json`);
+    const armyInfo: Army.Army = require(`hex-resources/resources/armies/${army}.json`);
     for (let jsonToken of armyInfo.tokens) {
       const token = new Token(jsonToken);
       for (let i = 0; i < (jsonToken.count || 1); ++i) {

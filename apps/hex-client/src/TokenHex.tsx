@@ -1,6 +1,6 @@
 import React from 'react';
 import * as HexBoardUtils from './HexBoardUtils';
-import { Hex } from './Hex';
+import { Hex } from 'hex-game/Hex';
 
 interface FloatingContainerProps {
   /* Bottom position in pixels. */
@@ -48,7 +48,7 @@ interface TokenMarkProps {
  */
 class TokenMark extends React.Component<TokenMarkProps, {}> {
   render() {
-    const image = require(`./resources/${this.props.image}`);
+    const image = require(`hex-resources/resources/gfx/${this.props.image}`);
     const markStyle: React.CSSProperties = {
       backgroundImage: `url(${image})`,
       backgroundPosition: 'center center',
@@ -114,7 +114,7 @@ export class TokenHex extends React.Component<TokenHexProps, {}> {
   render() {
     const hex = this.props.hex;
     const name = hex.army + '_' + hex.token.id;
-    const hexImage=require(`./resources/${name}.png`);
+    const hexImage=require(`hex-resources/resources/gfx/${name}.png`);
     const fullHexStyle: React.CSSProperties = {
       backgroundImage: `url(${hexImage})`,
       backgroundPosition: 'center center',
@@ -128,7 +128,7 @@ export class TokenHex extends React.Component<TokenHexProps, {}> {
       zIndex: 20,
     };
 
-    const overlayImage=require('./resources/glow.png');
+    const overlayImage=require('hex-resources/resources/gfx/glow.png');
     const overlayStyle: React.CSSProperties = {
       backgroundImage: `url(${overlayImage})`,
       backgroundPosition: 'center center',

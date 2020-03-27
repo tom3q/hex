@@ -24,7 +24,7 @@ export class Hex {
   /** Rotation of the token, in units of 60 degrees. */
   rotation: number;
   /** Token description. */
-  token: Token;
+  token: Readonly<Token>;
   /** The turn number the token was used. */
   turnUsed: number;
 
@@ -34,7 +34,7 @@ export class Hex {
    * @param army Identifier of the army.
    * @param token Token description JSON object.
    */
-  constructor(player: number, army: string, token: Token) {
+  constructor(player: number, army: string, token: Readonly<Token>) {
     this.army = army;
     this.attackedInBattle = false;
     this.damage = 0;

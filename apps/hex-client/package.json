@@ -1,0 +1,32 @@
+{
+  "name": "hex-client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "webpack-dev-server --mode development",
+    "build": "webpack --mode=production"
+  },
+  "dependencies": {
+    "boardgame.io": "^0.39.3",
+    "hex-game": "^0.1.0",
+    "hex-resources": "^0.1.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-react": "^7.9.4",
+    "@babel/preset-typescript": "^7.9.0",
+    "@types/node": "^13.9.5",
+    "@types/react": "^16.9.26",
+    "@types/react-dom": "^16.9.5",
+    "babel-loader": "^8.1.0",
+    "file-loader": "^6.0.0",
+    "html-webpack-plugin": "^4.0.2",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.1"
+  }
+}

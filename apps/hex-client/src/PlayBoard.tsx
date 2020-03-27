@@ -1,7 +1,7 @@
 import React from 'react';
 import * as HexBoardUtils from './HexBoardUtils';
-import * as HexUtils from './HexUtils';
-import { BoardState } from './BoardState';
+import * as HexUtils from 'hex-game/HexUtils';
+import { BoardState } from 'hex-game/BoardState';
 import { EmptyHex } from './EmptyHex';
 import { TokenHex } from './TokenHex';
 

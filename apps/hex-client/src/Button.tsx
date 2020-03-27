@@ -87,9 +87,9 @@ export class Button extends React.Component<ButtonProps, ButtonState> {
   render() {
     let image;
     if (!this.props.disabled && this.state.down) {
-      image = require(`./resources/${this.props.imageDown}`);
+      image = require(`hex-resources/resources/gfx/${this.props.imageDown}`);
     } else {
-      image = require(`./resources/${this.props.image}`);
+      image = require(`hex-resources/resources/gfx/${this.props.image}`);
     }
     let filter = undefined;
     if (this.props.disabled) {
