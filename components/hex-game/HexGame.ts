@@ -173,6 +173,8 @@ function useInstantToken(G: HexGameState, ctx: any, at: number, on: any) {
  * boardgame.io Game object implementing all of the game logic.
  */
 export const HexGame = {
+  name: "Hex",
+
   setup: (ctx: any) => ({
     /** State of the battle if in progress. */
     battle: null,

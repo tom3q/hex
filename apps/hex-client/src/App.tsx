@@ -1,23 +1,20 @@
-import { Client } from 'boardgame.io/react';
-import { SocketIO } from 'boardgame.io/multiplayer';
-//import { Local } from 'boardgame.io/multiplayer';
 import React from 'react';
 import { HexGame } from 'hex-game/HexGame';
-import { HexBoard } from '../src/HexBoard';
-
-const HexClient = Client({
-  //debug: false,
-  game: HexGame,
-  board: HexBoard,
-  multiplayer: SocketIO({ server: '100.115.92.200:8000' }),
-  //multiplayer: Local(),
-});
+import { HexBoard } from './HexBoard';
+import { Lobby } from 'boardgame.io/react';
+import './App.css';
 
 const App = () => {
+  const importedGames = [
+    { game: HexGame, board: HexBoard }
+  ];
   return (
     <div>
-      <HexClient playerID="0" />
-      <HexClient playerID="1" />
+      <Lobby
+        gameServer={`http://localhost:8000`}
+        lobbyServer={`http://localhost:8000`}
+        gameComponents={importedGames}
+      />;
     </div>
   );
 }
