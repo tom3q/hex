@@ -1,0 +1,25 @@
+{
+  "name": "hex-server",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "NODE_ENV=development webpack",
+    "start": "node dist/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "^13.9.5",
+    "node-persist": "^3.0.5",
+    "pnp-webpack-plugin": "^1.6.4",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
+    "uws": "^9.0",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "dependencies": {
+    "boardgame.io": "^0.39.3",
+    "hex-game": "^0.1.0"
+  }
+}

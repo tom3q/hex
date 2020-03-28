@@ -23,3 +23,11 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.<br>
 Your app is ready to be deployed!
 
+### `yarn workspace hex-server build`
+
+Builds the hex-server app for production to the `dist` folder.<br>
+Must be run before running the `start` script mentioned below.
+
+### `yarn workspace hex-server start`
+
+Runs the hex-server app in the development mode.
