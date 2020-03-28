@@ -3,13 +3,15 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
     compress: true,
     port: 9000
   },
   devtool: 'inline-source-map',
   entry: {
     app: path.join(__dirname, 'src', 'index.tsx')
+  },
+  experiments: {
+    asset: true
   },
   module: {
     rules: [
@@ -33,9 +35,7 @@ module.exports = {
       },
       {
         test: /\.(png|jpe?g|gif)$/i,
-        use: {
-          loader: 'file-loader'
-        }
+        type: 'asset/resource'
       },
       {
         test: /\.css$/,
