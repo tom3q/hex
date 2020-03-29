@@ -1,12 +1,9 @@
-import { immerable } from 'immer';
 import { Token } from './Token';
 
 /**
  * Represents a hex token on the board.
  */
-export class Hex {
-  [immerable] = true
-
+export interface Hex {
   /** Identifier of the army. */
   army: string;
   /** Whether the unit attacked in current battle. */
@@ -27,23 +24,4 @@ export class Hex {
   token: Readonly<Token>;
   /** The turn number the token was used. */
   turnUsed: number;
-
-  /**
-   * Constructs a hex object.
-   * @param player Identifier of the player.
-   * @param army Identifier of the army.
-   * @param token Token description JSON object.
-   */
-  constructor(player: number, army: string, token: Readonly<Token>) {
-    this.army = army;
-    this.attackedInBattle = false;
-    this.damage = 0;
-    this.damagedInBattle = false;
-    this.health = token.health || 1;
-    this.initiative = [ ...token.initiative ];
-    this.player = player;
-    this.rotation = 0;
-    this.token = token;
-    this.turnUsed = -1;
-  }
 }

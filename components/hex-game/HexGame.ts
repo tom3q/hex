@@ -8,13 +8,15 @@ import { INVALID_MOVE } from 'boardgame.io/core';
 import { TurnOrder } from 'boardgame.io/core';
 import * as HexGameUtils from './HexGameUtils';
 import * as HexUtils from './HexUtils';
-import { Battle } from './Battle';
-import { BoardState } from './BoardState';
-import { Deck } from './Deck';
+import { BattleManager } from './BattleManager';
+import { BoardStateManager } from './BoardStateManager';
+import { DeckManager } from './DeckManager';
 import { Hex } from './Hex';
 import { HexGameState } from './HexGameState';
+import { HexManager } from './HexManager';
+import { Token } from './Token';
 import { InstantHandlerFactory } from './InstantHandlerFactory';
-import { Player } from './Player';
+import { PlayerManager } from './PlayerManager';
 
 /**
  * Verifies end turn conditions and marks the turn as ended if all of them
@@ -23,7 +25,7 @@ import { Player } from './Player';
  */
 function endTurn(G: HexGameState, ctx: any) {
   if (!HexGameUtils.isTurnValid(G, ctx))
-    {console.trace(); return INVALID_MOVE;}
+    return INVALID_MOVE;
  
   ctx.events.endTurn();
   return undefined;
@@ -48,7 +50,8 @@ function moveToken(G: HexGameState, ctx: any, from: number, to: number) {
       HexUtils.CachePosToPlayer(to) !== player)
     return INVALID_MOVE;
 
-  const hex = G.board.get(from);
+  const board = new BoardStateManager(G.board);
+  const hex = board.get(from);
   if (hex === null)
     return INVALID_MOVE;
 
@@ -79,8 +82,8 @@ function moveToken(G: HexGameState, ctx: any, from: number, to: number) {
     }
   }
 
-  G.board.remove(from);
-  G.board.put(to, hex);
+  board.remove(from);
+  board.put(to, hex);
   return undefined;
 }
 
@@ -97,7 +100,8 @@ function moveToken(G: HexGameState, ctx: any, from: number, to: number) {
  */
 function rotateToken(G: HexGameState, ctx: any, pos: number, rotation: number) {
   const player = Number(ctx.currentPlayer);
-  const hex = G.board.get(pos);
+  const board = new BoardStateManager(G.board);
+  const hex = board.get(pos);
   if (hex === null)
     return INVALID_MOVE;
 
@@ -118,10 +122,11 @@ function rotateToken(G: HexGameState, ctx: any, pos: number, rotation: number) {
  */
 function discardCache(G: HexGameState, ctx: any, pos: number) {
   const player = Number(ctx.currentPlayer);
+  const board = new BoardStateManager(G.board);
   if (pos === null) {
     for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
       const pos = HexUtils.PlayerCachePos(player, i);
-      G.board.remove(pos);
+      board.remove(pos);
     }
     return;
   }
@@ -132,7 +137,7 @@ function discardCache(G: HexGameState, ctx: any, pos: number) {
   if (HexUtils.CachePosToPlayer(pos) !== player)
     return INVALID_MOVE;
 
-  G.board.remove(pos);
+  board.remove(pos);
   return undefined;
 }
 
@@ -149,7 +154,8 @@ function useInstantToken(G: HexGameState, ctx: any, at: number, on: any) {
   if (playerState.tokensUsedInTurn === HexUtils.CACHE_SIZE - 1)
     return INVALID_MOVE;
 
-  const hex = G.board.get(at);
+  const board = new BoardStateManager(G.board);
+  const hex = board.get(at);
   if (hex === null)
     return INVALID_MOVE;
 
@@ -162,7 +168,7 @@ function useInstantToken(G: HexGameState, ctx: any, at: number, on: any) {
     return INVALID_MOVE;
 
   playerState.tokensUsedInTurn++;
-  G.board.remove(at);
+  board.remove(at);
   return undefined;
 }
 
@@ -178,9 +184,9 @@ export const HexGame = {
     /** Turn order for the battle phase. */
     battleTurns: [],
     /** State of the board. */
-    board: new BoardState(),
+    board: BoardStateManager.create(),
     /** All players participating in the game. */
-    players: Array.from({ length: ctx.numPlayers }, () => new Player())
+    players: Array.from({ length: ctx.numPlayers }, () => PlayerManager.create())
   }),
 
   events: {
@@ -211,7 +217,6 @@ export const HexGame = {
 
       turn: {
         order: TurnOrder.ONCE,
-        activePlayers: ActivePlayers.ALL_ONCE,
 
         onBegin: (G: HexGameState, ctx: any) => {
           console.log('hqSetup.onTurnBegin()');
@@ -219,14 +224,15 @@ export const HexGame = {
           const playerState = G.players[player];
   
           /* TODO: Obtain the army from the lobby. */
-          const deck = new Deck(
+          playerState.deck = DeckManager.create(
             ctx, player ? "borgo" : "moloch");
-          playerState.deck = deck;
   
+          const deck = new DeckManager(playerState.deck);
+          const board = new BoardStateManager(G.board);
           let cachePos = player * HexUtils.CACHE_SIZE;
-          let token;
+          let token: Token | undefined;
           while ((token = deck.drawHq())) {
-            G.board.put(cachePos++, new Hex(player, deck.army, token));
+            board.put(cachePos++, HexManager.create(player, deck.get().army, token));
           }
         },
       },
@@ -267,22 +273,23 @@ export const HexGame = {
           console.log('normal.onTurnBegin()');
           const player = Number(ctx.currentPlayer);
           const playerState = G.players[player];
-          let deck = playerState.deck;
-          if (deck === null)
+          if (playerState.deck === null)
             throw new Error('deck === null');
+          let deck = new DeckManager(playerState.deck);
   
+          const board = new BoardStateManager(G.board);
           for (let i = 0; i < HexUtils.CACHE_SIZE; ++i) {
             const pos = HexUtils.PlayerCachePos(player, i);
-            let cell = G.board.get(pos);
+            let cell = board.get(pos);
   
             if (cell)
               continue;
   
             let token = deck.draw();
-            if (token === null) {
+            if (!token) {
               break;
             }
-            G.board.put(pos, new Hex(player, deck.army, token));
+            board.put(pos, HexManager.create(player, deck.get().army, token));
           }
         },
 
@@ -342,8 +349,8 @@ export const HexGame = {
           if (token === undefined)
             throw new Error('token === undefined');
           //const pos = HexUtils.XyToPos(token.x, token.y);
-          //const hex = G.board.get(pos);
-          console.log(`(${token.x}, ${token.y}) attacking`);
+          //const hex = board.get(pos);
+          console.log(`${token} attacking`);
   
           if (!G.battle.tokens.length) {
             ctx.events.endPhase( { next: G.battle.initiative ?
@@ -381,12 +388,14 @@ export const HexGame = {
          */
         ctx.events.endTurn();
 
+        const board = new BoardStateManager(G.board);
+
         if (!G.battle) {
           let maxInitiative = 0;
-          G.board.forEachHex((hex: Hex, coords: HexUtils.Coordinates) => {
+          board.forEachHex((hex: Hex, coords: HexUtils.Coordinates) => {
             maxInitiative = Math.max(maxInitiative, ...hex.initiative);
           });
-          G.battle = new Battle(maxInitiative, ctx.currentPlayer);
+          G.battle = BattleManager.create(maxInitiative, ctx.currentPlayer);
           console.log('Starting battle!');
         }
         const battle = G.battle;
@@ -395,9 +404,9 @@ export const HexGame = {
 
         battle.tokens = [];
         G.battleTurns = [];
-        G.board.forEachHex((hex: Hex, coords: HexUtils.Coordinates) => {
+        board.forEachHex((hex: Hex, coords: HexUtils.Coordinates) => {
           if (hex.initiative.includes(battle.initiative)) {
-            battle.tokens.push(coords);
+            battle.tokens.push(coords.toPos());
             G.battleTurns.push(hex.player);
           }
         });
@@ -421,9 +430,10 @@ export const HexGame = {
       onEnd: (G: HexGameState, ctx: any) => {
         console.log('battle.onEnd()');
 
-        G.board.forEachHex((hex: Hex, coords: HexUtils.Coordinates) => {
+        const board = new BoardStateManager(G.board);
+        board.forEachHex((hex: Hex, coords: HexUtils.Coordinates) => {
           if (hex.damage >= hex.health) {
-            G.board.remove(coords.toPos());
+            board.remove(coords.toPos());
           }
         });
 

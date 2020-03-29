@@ -1,7 +1,7 @@
 import React from 'react';
 import * as HexBoardUtils from './HexBoardUtils';
 import * as HexUtils from 'hex-game/HexUtils';
-import { BoardState } from 'hex-game/BoardState';
+import { BoardStateManager } from 'hex-game/BoardStateManager';
 import { EmptyHex } from './EmptyHex';
 import { TokenHex } from './TokenHex';
 
@@ -71,7 +71,7 @@ interface PlayBoardProps {
   /** Position of the currently selected hex. */
   activeHex: number | null;
   /** Board state. */
-  board: BoardState;
+  board: BoardStateManager;
   /**
    * A function to call when the hex is clicked.
    * @param Mouse click event.

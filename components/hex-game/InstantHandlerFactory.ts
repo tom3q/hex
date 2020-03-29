@@ -1,3 +1,4 @@
+import { BoardStateManager } from './BoardStateManager';
 import * as HexGameUtils from './HexGameUtils';
 import * as HexUtils from './HexUtils';
 import { HexGameState } from './HexGameState';
@@ -37,9 +38,10 @@ class InstantHandlerFactoryClass {
       const x = target.x + offset.x;
       const y = target.y + offset.y;
       const pos = HexUtils.XyToPos(x, y);
-      const hex = G.board.get(pos);
+      const board = new BoardStateManager(G.board);
+      const hex = board.get(pos);
       if (hex && !hex.token.hq && ++hex.damage >= hex.health) {
-        G.board.remove(pos);
+        board.remove(pos);
       }
     }
     return true;

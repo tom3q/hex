@@ -1,5 +1,6 @@
 import React from 'react';
 import * as HexUtils from 'hex-game/HexUtils';
+import { BoardStateManager } from 'hex-game/BoardStateManager';
 import { Button } from './Button';
 import { HexGameState } from 'hex-game/HexGameState';
 import { PlayBoard } from './PlayBoard';
@@ -46,6 +47,7 @@ export class HexBoard extends React.Component<HexBoardProps, HexBoardState> {
   * SyntheticEvent.deltaY.
   */
   private wheelPos: number;
+  private board: BoardStateManager;
 
   constructor(props: HexBoardProps) {
     super(props);
@@ -78,7 +80,7 @@ export class HexBoard extends React.Component<HexBoardProps, HexBoardState> {
 
     /* Use an intant hex if active and clicked on a board hex. */
     const activeHex = this.state.activeHex !== null ?
-      this.props.G.board.get(this.state.activeHex) : null;
+      this.board.get(this.state.activeHex) : null;
     if (activeHex && activeHex.token.instant) {
       if (!HexUtils.PosIsCache(pos)) {
         this.props.moves.useInstantToken(this.state.activeHex, pos);
@@ -88,7 +90,7 @@ export class HexBoard extends React.Component<HexBoardProps, HexBoardState> {
     }
 
     /* Change the active selection if clicked on another owned token. */
-    const targetHex = this.props.G.board.get(pos);
+    const targetHex = this.board.get(pos);
     if (targetHex) {
       // Clicked a TokenHex
       if (targetHex.player === Number(this.props.playerID)) {
@@ -113,7 +115,7 @@ export class HexBoard extends React.Component<HexBoardProps, HexBoardState> {
     if (this.state.activeHex !== pos)
       return;
 
-    const activeHex = this.props.G.board.get(pos);
+    const activeHex = this.board.get(pos);
     if (activeHex === null || activeHex.token.instant)
       return;
 
@@ -126,6 +128,8 @@ export class HexBoard extends React.Component<HexBoardProps, HexBoardState> {
   };
 
   render() {
+    this.board = new BoardStateManager(this.props.G.board);
+
     const boardBackground=require('hex-resources/resources/gfx/board.jpg');
     const boardStyle: React.CSSProperties = {
       backgroundImage: `url(${boardBackground})`,
@@ -169,7 +173,7 @@ export class HexBoard extends React.Component<HexBoardProps, HexBoardState> {
       caches.push(
         <TokenCache vertical={i % 2 !== 0}
                     player={player}
-                    board={this.props.G.board}
+                    board={this.board}
                     activeHex={this.state.activeHex}
                     onClick={this.onClick}
                     onWheel={this.onWheel}/>
@@ -188,7 +192,7 @@ export class HexBoard extends React.Component<HexBoardProps, HexBoardState> {
             {caches[1]}
           </div>
           <div style={tableContainerStyle}>
-            <PlayBoard board={this.props.G.board}
+            <PlayBoard board={this.board}
                        activeHex={this.state.activeHex}
                        onClick={this.onClick}
                        onWheel={this.onWheel}/>
