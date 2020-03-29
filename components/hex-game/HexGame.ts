@@ -43,35 +43,32 @@ function endTurn(G: HexGameState, ctx: any) {
  *      - the to position is a cache of another player.
  */
 function moveToken(G: HexGameState, ctx: any, from: number, to: number) {
-  console.log('moveToken(' + from + ', ' + to + ')');
-  console.trace();
-
   const player = Number(ctx.currentPlayer);
   if (HexUtils.PosIsCache(to) &&
       HexUtils.CachePosToPlayer(to) !== player)
-    {console.trace(); return INVALID_MOVE;}
+    return INVALID_MOVE;
 
   const hex = G.board.get(from);
   if (hex === null)
-    {console.trace(); return INVALID_MOVE;}
+    return INVALID_MOVE;
 
   if (hex.player !== player)
-    {console.trace(); return INVALID_MOVE;}
+    return INVALID_MOVE;
 
   if (hex.token.instant)
-    {console.trace(); return INVALID_MOVE;}
+    return INVALID_MOVE;
 
-  if (G.board.get(to) !== null)
-    {console.trace(); return INVALID_MOVE;}
+  if (board.get(to) !== null)
+    return INVALID_MOVE;
 
   if (hex.turnUsed !== -1 && hex.turnUsed !== ctx.turn)
-    {console.trace(); return INVALID_MOVE;}
+    return INVALID_MOVE;
 
   const playerState = G.players[player];
   if (!hex.token.hq) {
     if (HexUtils.PosIsCache(from)) {
       if (playerState.tokensUsedInTurn === HexUtils.CACHE_SIZE - 1) {
-        console.trace(); return INVALID_MOVE;
+        return INVALID_MOVE;
       }
       playerState.tokensUsedInTurn++;
       hex.turnUsed = ctx.turn;
@@ -102,13 +99,13 @@ function rotateToken(G: HexGameState, ctx: any, pos: number, rotation: number) {
   const player = Number(ctx.currentPlayer);
   const hex = G.board.get(pos);
   if (hex === null)
-    {console.trace(); return INVALID_MOVE;}
+    return INVALID_MOVE;
 
   if (hex.player !== player)
-    {console.trace(); return INVALID_MOVE;}
+    return INVALID_MOVE;
 
   if (hex.token.instant)
-    {console.trace(); return INVALID_MOVE;}
+    return INVALID_MOVE;
 
   hex.rotation = (hex.rotation + rotation) % 6;
   return undefined;
@@ -130,10 +127,10 @@ function discardCache(G: HexGameState, ctx: any, pos: number) {
   }
 
   if (!HexUtils.PosIsCache(pos))
-    {console.trace(); return INVALID_MOVE;}
+    return INVALID_MOVE;
 
   if (HexUtils.CachePosToPlayer(pos) !== player)
-    {console.trace(); return INVALID_MOVE;}
+    return INVALID_MOVE;
 
   G.board.remove(pos);
   return undefined;
@@ -150,19 +147,19 @@ function discardCache(G: HexGameState, ctx: any, pos: number) {
 function useInstantToken(G: HexGameState, ctx: any, at: number, on: any) {
   const playerState = G.players[ctx.currentPlayer];
   if (playerState.tokensUsedInTurn === HexUtils.CACHE_SIZE - 1)
-    {console.trace(); return INVALID_MOVE;}
+    return INVALID_MOVE;
 
   const hex = G.board.get(at);
   if (hex === null)
-    {console.trace(); return INVALID_MOVE;}
+    return INVALID_MOVE;
 
   const abilities = hex.token.abilities;
   if (abilities === undefined || abilities.length !== 1)
-    {console.trace(); return INVALID_MOVE;}
+    return INVALID_MOVE;
 
   const func = InstantHandlerFactory.getHandler(abilities[0].type);
   if (!func || !func(G, ctx, on))
-    {console.trace(); return INVALID_MOVE;}
+    return INVALID_MOVE;
 
   playerState.tokensUsedInTurn++;
   G.board.remove(at);
