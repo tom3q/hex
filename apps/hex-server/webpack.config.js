@@ -7,6 +7,7 @@ const {
 } = process.env;
 
 module.exports = {
+  devtool: NODE_ENV === "development" ? "inline-source-map" : undefined,
   entry: "./src/index.ts",
   externals: [nodeExternals()],
   mode: NODE_ENV,
@@ -33,6 +34,5 @@ module.exports = {
   ],
   node: {
     __dirname: true,
-  }
-//  watch: NODE_ENV === 'development'
+  },
 };
