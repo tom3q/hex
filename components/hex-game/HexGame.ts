@@ -303,12 +303,6 @@ export const HexGame = {
 
       onBegin: (G: HexGameState, ctx: any) => {
         console.log('normal.onBegin()');
-        /*
-         * TODO(https://github.com/nicolodavis/boardgame.io/issues/394))
-         * Remove when the framework starts handling the first turn of the
-         * next phase correctly.
-         */
-        ctx.events.endTurn();
       },
 
       onEnd: (G: HexGameState, ctx: any) => {
@@ -380,13 +374,6 @@ export const HexGame = {
        */
       onBegin: (G: HexGameState, ctx: any) => {
         console.log('battle.onBegin()');
-
-        /*
-         * TODO(https://github.com/nicolodavis/boardgame.io/issues/394))
-         * Remove when the framework starts handling the first turn of the
-         * next phase correctly.
-         */
-        ctx.events.endTurn();
 
         const board = new BoardStateManager(G.board);
 
