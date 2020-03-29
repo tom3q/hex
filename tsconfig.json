@@ -6,8 +6,9 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
+    "module": "es6",
+    "moduleResolution": "node",
     "noUnusedParameters": false,
-    "outDir": "dist",
     "paths": {
       "~/*": ["components/*"]
     },
@@ -15,13 +16,8 @@
     "removeComments": true,
     "rootDir": ".",
     "sourceMap": true,
-    "skipLibCheck": true,
     "strict": true,
-    "strictNullChecks": true
-  },
-  "exclude": [
-    "node_modules",
-    "**/dist",
-    "**/webpack.config.js"
-  ]
+    "strictNullChecks": true,
+    "target": "esnext"
+  }
 }

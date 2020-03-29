@@ -1,19 +1,13 @@
 {
   "extends": "../../tsconfig.json",
   "exclude": [
-    "node_modules"
-  ],
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
+    "dist",
+    "node_modules",
+    "webpack.config.js"
   ],
   "compilerOptions": {
-    "allowJs": true,
-    "resolveJsonModule": true,
-    "module": "es6",
-    "moduleResolution": "node",
+    "jsx": "react",
     "noEmit": true,
-    "target": "esnext",
-    "jsx": "react"
+    "outDir": "dist"
   }
 }
