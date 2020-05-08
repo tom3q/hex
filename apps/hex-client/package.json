@@ -7,11 +7,11 @@
     "build": "webpack --mode=production"
   },
   "dependencies": {
-    "boardgame.io": "^0.39.3",
+    "boardgame.io": "^0.39.10",
     "hex-game": "^0.1.0",
     "hex-resources": "^0.1.0",
-    "react": "16.13.1",
-    "react-dom": "16.13.1"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
@@ -23,16 +23,16 @@
     "@types/node": "^13.9.5",
     "@types/react": "^16.9.26",
     "@types/react-dom": "^16.9.5",
-    "@typescript-eslint/eslint-plugin": "^2.25.0",
-    "@typescript-eslint/parser": "^2.25.0",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
     "babel-loader": "^8.1.0",
     "css-loader": "^3.4.2",
-    "eslint": "^6.8.0",
-    "eslint-config-google": "^0.14.0",
-    "eslint-plugin-react": "^7.19.0",
-    "html-webpack-plugin": "^4.0.2",
+    "eslint": "latest",
+    "eslint-config-google": "latest",
+    "eslint-plugin-react": "latest",
+    "html-webpack-plugin": "^4.3.0",
     "style-loader": "^1.1.3",
     "typescript": "^3.8.3",
-    "webpack": "^5.0.0-beta.14"
+    "webpack": "^5.0.0-beta.16"
   }
 }

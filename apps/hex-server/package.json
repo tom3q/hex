@@ -9,23 +9,22 @@
   },
   "devDependencies": {
     "@types/node": "^13.9.5",
-    "@typescript-eslint/eslint-plugin": "^2.25.0",
-    "@typescript-eslint/parser": "^2.25.0",
-    "eslint": "^6.8.0",
-    "eslint-config-google": "^0.14.0",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
+    "eslint": "latest",
+    "eslint-config-google": "latest",
     "node-persist": "^3.0.5",
     "nodemon": "^2.0.2",
     "pnp-webpack-plugin": "^1.6.4",
-    "ts-loader": "^6.2.2",
+    "ts-loader": "^7.0.3",
     "typescript": "^3.8.3",
-    "uws": "^9.0",
-    "webpack": "^5.0.0-beta.14",
+    "webpack": "^5.0.0-beta.16",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3",
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
-    "boardgame.io": "^0.39.3",
+    "boardgame.io": "^0.39.10",
     "hex-game": "^0.1.0"
   }
 }

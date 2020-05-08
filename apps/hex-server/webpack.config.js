@@ -9,7 +9,12 @@ const {
 module.exports = {
   devtool: NODE_ENV === "development" ? "inline-source-map" : undefined,
   entry: "./src/index.ts",
-  externals: [nodeExternals()],
+  externals: [
+    nodeExternals(),
+    {
+      uws: 'uws'
+    }
+  ],
   mode: NODE_ENV,
   module: {
     rules: [
