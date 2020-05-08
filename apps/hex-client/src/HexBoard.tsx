@@ -56,6 +56,7 @@ export class HexBoard extends React.Component<HexBoardProps, HexBoardState> {
       activeHex: null
     }
     this.wheelPos = 0;
+    this.board = new BoardStateManager(BoardStateManager.create());
   }
 
   /**
